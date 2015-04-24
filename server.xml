@@ -1,0 +1,20 @@
+<convertConfig>
+  <servers>
+    <server>
+        <ip>127.0.0.1</ip>
+        <port>9000</port>
+    </server>
+    <server>
+        <ip>127.0.0.1</ip>
+        <port>9001</port>
+    </server>
+    <server>
+        <ip>127.0.0.1</ip>
+        <port>9002</port>
+    </server>
+    <server>
+        <ip>127.0.0.1</ip>
+        <port>9003</port>
+    </server>
+  </servers>
+</convertConfig>
