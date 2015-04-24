@@ -10,7 +10,7 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
 import com.boful.cbalance.protocol.DistributeTaskProtocol;
-import com.boful.cnode.server.codec.BofulCodec;
+import com.boful.cbalance.server.codec.BofulCodec;
 
 public class CBalanceClient {
     private ConnectFuture cf;
