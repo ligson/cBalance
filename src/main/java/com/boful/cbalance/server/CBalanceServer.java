@@ -33,7 +33,7 @@ public class CBalanceServer {
 
 		acceptor.getSessionConfig().setReadBufferSize(2048);
 		acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 10);
-		acceptor.bind(new InetSocketAddress(9000));
+		acceptor.bind(new InetSocketAddress(11000));
 		logger.debug("starting...........");
 
 		// 初始化ServerConfig
