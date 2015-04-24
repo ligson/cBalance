@@ -10,8 +10,8 @@ public class CBalanceServerTest {
 			test1.connect("127.0.0.1", 11000);
 			String cmd = "-id job_0001 -i e:/爱情公寓番外篇温酒煮华雄.f4v -o e:/test/bak.mp4 -vb 30000 -ab 20000 -size 300x200";
 			test1.send(cmd);
-			cmd = "-id job_0001 -i e:/爱情公寓番外篇温酒煮华雄.f4v -o e:/test/bak2.mp4 -vb 30000 -ab 20000 -size 300x200";
-			test1.send(cmd);
+			//cmd = "-id job_0001 -i e:/爱情公寓番外篇温酒煮华雄.f4v -o e:/test/bak2.mp4 -vb 30000 -ab 20000 -size 300x200";
+			//test1.send(cmd);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
