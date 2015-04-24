@@ -46,10 +46,12 @@ public class DistributeTaskUtils {
 	public static void initClientList() {
 		clientList = new ArrayList<CNodeClient>();
 
+		String address = "";
+		int port = 0;
 		for (Map<String, String> server : serverList) {
 			try {
-				String address = server.get("ip");
-				int port = Integer.parseInt(server.get("port"));
+				address = server.get("ip");
+				port = Integer.parseInt(server.get("port"));
 
 				CNodeClient client = new CNodeClient();
 				client.connect(address, port);
