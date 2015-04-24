@@ -8,9 +8,8 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.filter.logging.LoggingFilter;
 import org.apache.mina.transport.socket.nio.NioSocketAcceptor;
 
+import com.boful.cbalance.server.codec.BofulCodec;
 import com.boful.cbalance.utils.DistributeTaskUtils;
-import com.boful.cnode.server.NodeServerHandler;
-import com.boful.cnode.server.codec.BofulCodec;
 
 public class CBalanceServer {
 	/***
@@ -20,7 +19,7 @@ public class CBalanceServer {
 	/***
 	 * 服务器端业务处理
 	 */
-	private static NodeServerHandler serverHandler = new NodeServerHandler();
+	private static BalanceServerHandler serverHandler = new BalanceServerHandler();
 
 	private static NioSocketAcceptor acceptor = new NioSocketAcceptor();
 	private static Logger logger = Logger.getLogger(CBalanceServer.class);

@@ -8,8 +8,8 @@ import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
+import com.boful.cbalance.protocol.Operation;
 import com.boful.cbalance.protocol.TaskStateProtocol;
-import com.boful.cnode.protocol.Operation;
 
 public class BalanceClientHandler extends IoHandlerAdapter {
 
@@ -38,7 +38,7 @@ public class BalanceClientHandler extends IoHandlerAdapter {
 		}
 		if (field != null) {
 			int operation = field.getInt(message);
-			if (operation == Operation.TAG_CONVERT_STATE) {
+			if (operation == Operation.TAG_TASK_STATE) {
 				TaskStateProtocol taskStateProtocol = (TaskStateProtocol) message;
 				logger.info(taskStateProtocol.getMessage());
 			}
