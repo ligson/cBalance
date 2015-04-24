@@ -12,7 +12,7 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import com.boful.cnode.server.CNodeClient;
+import com.boful.cnode.client.CNodeClient;
 
 public class DistributeTaskUtils {
 

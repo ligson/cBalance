@@ -9,8 +9,8 @@ import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
-import com.boful.cbalance.protocol.DistributeTaskProtocol;
 import com.boful.cbalance.server.codec.BofulCodec;
+import com.boful.cnode.protocol.ConvertTaskProtocol;
 
 public class CBalanceClient {
     private ConnectFuture cf;
@@ -46,9 +46,9 @@ public class CBalanceClient {
     public void send(String cmd) throws Exception {
         ioSession = cf.getSession();
         if (ioSession != null) {
-        	DistributeTaskProtocol distributeTaskProtocol = new DistributeTaskProtocol();
-        	distributeTaskProtocol.setCmd(cmd);
-            ioSession.write(distributeTaskProtocol);
+        	ConvertTaskProtocol convertTaskProtocol = new ConvertTaskProtocol();
+        	convertTaskProtocol.setCmd(cmd);
+            ioSession.write(convertTaskProtocol);
         } else {
             throw new Exception("未连接上");
         }

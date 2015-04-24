@@ -1,6 +1,7 @@
-package com.boful.cbalance.server;
+package com.boful.cnode.client;
 
 import java.lang.reflect.Field;
+import java.net.InetSocketAddress;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,13 +9,14 @@ import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
+import com.boful.cbalance.server.BalanceServerHandler;
 import com.boful.cnode.protocol.ConvertStateProtocol;
 import com.boful.cnode.protocol.Operation;
 
-public class BalanceClientHandler extends IoHandlerAdapter {
+public class NodeClientHandler extends IoHandlerAdapter {
 
 	private Set<IoSession> sessions = new HashSet<IoSession>();
-	private static Logger logger = Logger.getLogger(BalanceClientHandler.class);
+	private static Logger logger = Logger.getLogger(NodeClientHandler.class);
 
 	@Override
 	public void sessionClosed(IoSession session) throws Exception {
@@ -41,6 +43,23 @@ public class BalanceClientHandler extends IoHandlerAdapter {
 			if (operation == Operation.TAG_CONVERT_STATE) {
 				ConvertStateProtocol convertStateProtocol = (ConvertStateProtocol) message;
 				logger.info(convertStateProtocol.getMessage());
+
+				String ip = session.getAttribute("rootIp").toString();
+				int port = (int) session.getAttribute("rootPort");
+
+				// 取得连接Balance的session
+				Set<IoSession> balanceSessions = BalanceServerHandler
+						.getSessions();
+				for (IoSession balanceSession : balanceSessions) {
+					String balanceIp = ((InetSocketAddress) balanceSession
+							.getRemoteAddress()).getHostString();
+					int balancePort = ((InetSocketAddress) balanceSession
+							.getRemoteAddress()).getPort();
+					if (balanceIp.equals(ip) && balancePort == port) {
+						balanceSession.write(convertStateProtocol);
+						return;
+					}
+				}
 			}
 		}
 	}
