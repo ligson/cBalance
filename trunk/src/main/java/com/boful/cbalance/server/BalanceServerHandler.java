@@ -8,17 +8,20 @@ import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
-import com.boful.cbalance.protocol.DistributeTaskProtocol;
-import com.boful.cbalance.protocol.Operation;
-import com.boful.cbalance.protocol.TaskStateProtocol;
 import com.boful.cbalance.utils.DistributeTaskUtils;
+import com.boful.cnode.client.CNodeClient;
 import com.boful.cnode.protocol.ConvertStateProtocol;
-import com.boful.cnode.server.CNodeClient;
+import com.boful.cnode.protocol.ConvertTaskProtocol;
+import com.boful.cnode.protocol.Operation;
 
 public class BalanceServerHandler extends IoHandlerAdapter {
 
-	private Set<IoSession> sessions = new HashSet<IoSession>();
+	private static Set<IoSession> sessions = new HashSet<IoSession>();
 	private static Logger logger = Logger.getLogger(BalanceServerHandler.class);
+
+	public static Set<IoSession> getSessions() {
+		return sessions;
+	}
 
 	@Override
 	public void sessionClosed(IoSession session) throws Exception {
@@ -42,9 +45,9 @@ public class BalanceServerHandler extends IoHandlerAdapter {
 		}
 		if (field != null) {
 			int operation = field.getInt(message);
-			if (operation == Operation.TAG_DISTRIBUTE_TASK) {
-				DistributeTaskProtocol distributeTaskProtocol = (DistributeTaskProtocol) message;
-				distributeTask(distributeTaskProtocol, session);
+			if (operation == Operation.TAG_CONVERT_TASK) {
+				ConvertTaskProtocol convertTaskProtocol = (ConvertTaskProtocol) message;
+				distributeTask(convertTaskProtocol, session);
 			}
 		}
 	}
@@ -56,22 +59,22 @@ public class BalanceServerHandler extends IoHandlerAdapter {
 	 * @param session
 	 * @throws Exception
 	 */
-	private void distributeTask(DistributeTaskProtocol distributeTaskProtocol,
+	private void distributeTask(ConvertTaskProtocol convertTaskProtocol,
 			IoSession session) throws Exception {
 
-		TaskStateProtocol taskStateProtocol = new TaskStateProtocol();
+		ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
 
 		// 取得Client
 		CNodeClient client = DistributeTaskUtils.getClient();
 		if (client == null) {
-			taskStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-			taskStateProtocol.setMessage("客户端 不存在！");
-			session.write(taskStateProtocol);
+			convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
+			convertStateProtocol.setMessage("客户端 不存在！");
+			session.write(convertStateProtocol);
 			return;
 		}
 
 		// 向转码服务器发送命令
-		client.send(distributeTaskProtocol.getCmd());
+		client.send(convertTaskProtocol.getCmd(), session.getRemoteAddress());
 
 	}
 
