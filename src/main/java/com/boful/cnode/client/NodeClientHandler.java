@@ -42,10 +42,9 @@ public class NodeClientHandler extends IoHandlerAdapter {
 			int operation = field.getInt(message);
 			if (operation == Operation.TAG_CONVERT_STATE) {
 				ConvertStateProtocol convertStateProtocol = (ConvertStateProtocol) message;
-				logger.info(convertStateProtocol.getMessage());
-
 				String ip = session.getAttribute("rootIp").toString();
 				int port = (int) session.getAttribute("rootPort");
+				logger.info(convertStateProtocol.getMessage());
 
 				// 取得连接Balance的session
 				Set<IoSession> balanceSessions = BalanceServerHandler
