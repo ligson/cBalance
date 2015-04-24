@@ -23,7 +23,7 @@ public class DistributeTaskUtils {
 	public static void initServerConfig() throws DocumentException {
 
 		SAXReader SR = new SAXReader();
-		Document doc = SR.read(new File("e:/server.xml"));
+		Document doc = SR.read(new File("server.xml"));
 		Element rootElement = doc.getRootElement();
 
 		Element serverRootElement = rootElement.element("servers");
