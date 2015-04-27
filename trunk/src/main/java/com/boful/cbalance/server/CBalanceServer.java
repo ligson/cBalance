@@ -26,7 +26,7 @@ public class CBalanceServer {
 	private static Logger logger = Logger.getLogger(CBalanceServer.class);
 
 	public static void main(String[] args) throws Exception {
-		startServer(2014, 1100, 10);
+		startServer(2014, 11000, 10);
 	}
 
 	public static void startServer(int bufferSize, int port, int idleTime) {
