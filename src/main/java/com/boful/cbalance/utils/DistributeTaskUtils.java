@@ -44,9 +44,9 @@ public class DistributeTaskUtils {
 			return true;
 		} catch (Exception e) {
 			logger.debug("配置文件初始化失败...........");
+			logger.debug("错误信息：" + e.getMessage());
 			return false;
 		}
-
 	}
 
 	public static boolean initClientList() {
@@ -71,6 +71,7 @@ public class DistributeTaskUtils {
 		maxCount = clientList.size();
 		if (maxCount == 0) {
 			logger.debug("客户端初始化失败...........");
+			logger.debug("错误信息：服务器无法连接");
 			return false;
 		} else {
 			logger.debug("客户端初始化成功...........");
