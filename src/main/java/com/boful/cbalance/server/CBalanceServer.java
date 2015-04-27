@@ -36,8 +36,16 @@ public class CBalanceServer {
 		logger.debug("starting...........");
 
 		// 初始化ServerConfig
-		DistributeTaskUtils.initServerConfig();
+		boolean initState = DistributeTaskUtils.initServerConfig();
+		if (!initState) {
+			logger.debug("程序退出...........");
+			System.exit(0);
+		}
 		// 初始化客户端
-		DistributeTaskUtils.initClientList();
+		initState = DistributeTaskUtils.initClientList();
+		if (!initState) {
+			logger.debug("程序退出...........");
+			System.exit(0);
+		}
 	}
 }

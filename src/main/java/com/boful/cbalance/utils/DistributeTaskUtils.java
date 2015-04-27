@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
@@ -20,29 +19,37 @@ public class DistributeTaskUtils {
 	private static Logger logger = Logger.getLogger(DistributeTaskUtils.class);
 	private static List<CNodeClient> clientList = null;
 
-	public static void initServerConfig() throws DocumentException {
-		SAXReader SR = new SAXReader();
-		Document doc = SR.read(new File("src/main/resources/server.xml"));
-		Element rootElement = doc.getRootElement();
+	public static boolean initServerConfig() {
+		try {
+			SAXReader SR = new SAXReader();
+			Document doc = SR.read(new File("src/main/resources/server.xml"));
+			Element rootElement = doc.getRootElement();
 
-		Element serverRootElement = rootElement.element("servers");
-		List<Element> serverElementList = serverRootElement.elements("server");
+			Element serverRootElement = rootElement.element("servers");
+			List<Element> serverElementList = serverRootElement
+					.elements("server");
 
-		serverList = new ArrayList<Map<String, String>>();
+			serverList = new ArrayList<Map<String, String>>();
 
-		for (Element element : serverElementList) {
-			Element serverIpElement = element.element("ip");
-			Element serverPortElement = element.element("port");
-			Map<String, String> serverMap = new HashMap<String, String>();
-			serverMap.put("ip", serverIpElement.getText());
-			serverMap.put("port", serverPortElement.getText());
-			serverList.add(serverMap);
+			for (Element element : serverElementList) {
+				Element serverIpElement = element.element("ip");
+				Element serverPortElement = element.element("port");
+				Map<String, String> serverMap = new HashMap<String, String>();
+				serverMap.put("ip", serverIpElement.getText());
+				serverMap.put("port", serverPortElement.getText());
+				serverList.add(serverMap);
+			}
+
+			logger.debug("配置文件初始化成功...........");
+			return true;
+		} catch (Exception e) {
+			logger.debug("配置文件初始化失败...........");
+			return false;
 		}
 
-		logger.debug("配置文件初始化成功...........");
 	}
 
-	public static void initClientList() {
+	public static boolean initClientList() {
 		clientList = new ArrayList<CNodeClient>();
 
 		String address = "";
@@ -64,8 +71,10 @@ public class DistributeTaskUtils {
 		maxCount = clientList.size();
 		if (maxCount == 0) {
 			logger.debug("客户端初始化失败...........");
+			return false;
 		} else {
 			logger.debug("客户端初始化成功...........");
+			return true;
 		}
 	}
 
