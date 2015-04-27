@@ -10,8 +10,8 @@ import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
 import com.boful.cbalance.server.BalanceServerHandler;
-import com.boful.cnode.protocol.ConvertStateProtocol;
-import com.boful.cnode.protocol.Operation;
+import com.boful.net.cnode.protocol.ConvertStateProtocol;
+import com.boful.net.cnode.protocol.Operation;
 
 public class NodeClientHandler extends IoHandlerAdapter {
 

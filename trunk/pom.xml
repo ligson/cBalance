@@ -143,8 +143,8 @@
 			<version>0.0.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.boful.convert</groupId>
-			<artifactId>cNode</artifactId>
+			<groupId>com.boful</groupId>
+			<artifactId>bofulnetprotocol</artifactId>
 			<version>1.0</version>
 		</dependency>
 		<dependency>
