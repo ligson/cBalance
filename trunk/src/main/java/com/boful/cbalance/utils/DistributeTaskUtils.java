@@ -1,6 +1,7 @@
 package com.boful.cbalance.utils;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,7 +24,8 @@ public class DistributeTaskUtils {
 	public static boolean initServerConfig() {
 		try {
 			SAXReader SR = new SAXReader();
-			Document doc = SR.read(new File("src/main/resources/server.xml"));
+			URL url = ClassLoader.getSystemResource("conf/server.xml");
+			Document doc = SR.read(new File(url.getPath()));
 			Element rootElement = doc.getRootElement();
 
 			Element serverRootElement = rootElement.element("servers");
@@ -44,6 +46,7 @@ public class DistributeTaskUtils {
 			logger.debug("配置文件初始化成功...........");
 			return true;
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.debug("配置文件初始化失败...........");
 			logger.debug("错误信息：" + e.getMessage());
 			return false;
