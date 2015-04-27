@@ -29,7 +29,9 @@ public class CBalanceServer {
 		startServer();
 	}
 
+	@SuppressWarnings("static-access")
 	public static void startServer() {
+		logger.debug("配置文件位置："+ClassLoader.getSystemClassLoader().getSystemResource("").getPath());
 		int[] config = DistributeTaskUtils.initServerConfig();
 		acceptor.getFilterChain().addLast("logger", new LoggingFilter());
 		acceptor.getFilterChain().addLast("codec",
