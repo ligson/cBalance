@@ -88,7 +88,6 @@
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>${commonsLang.version}</version>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
