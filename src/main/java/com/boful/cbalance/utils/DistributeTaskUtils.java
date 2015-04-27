@@ -21,9 +21,8 @@ public class DistributeTaskUtils {
 	private static List<CNodeClient> clientList = null;
 
 	public static void initServerConfig() throws DocumentException {
-
 		SAXReader SR = new SAXReader();
-		Document doc = SR.read(new File("server.xml"));
+		Document doc = SR.read(new File("src/main/resources/server.xml"));
 		Element rootElement = doc.getRootElement();
 
 		Element serverRootElement = rootElement.element("servers");
