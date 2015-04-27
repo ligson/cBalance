@@ -10,4 +10,4 @@ for jar in `ls $WORK_HOME/lib/*.jar`
 done
 
 export LD_LIBRARY_PATH='$LD_LIBRARY_PATH:$WORK_HOME/tools/lib'
-$RUN_JAVA -Dfile.encoding=UTF-8 -classpath $LIB_PATH com.boful.storeServer.main.AppMain
+$RUN_JAVA -Dfile.encoding=UTF-8 -classpath $LIB_PATH com.boful.cbalance.server.CBalanceServer
