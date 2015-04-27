@@ -1,6 +1,7 @@
 @echo off
 set STORE_SERVER_HOME=%~dp0..
 set LOCALCLASSPATH=%STORE_SERVER_HOME%\.;%STORE_SERVER_HOME%\conf
+
 for %%f in (%STORE_SERVER_HOME%\lib\*.jar) do call %STORE_SERVER_HOME%\bin\cbalance %%f
 for %%f in (%STORE_SERVER_HOME%\conf\*.*) do call %STORE_SERVER_HOME%\bin\cbalance %%f
 
