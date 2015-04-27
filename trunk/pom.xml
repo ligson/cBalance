@@ -143,6 +143,11 @@
 			<version>0.0.1</version>
 		</dependency>
 		<dependency>
+			<groupId>com.boful.convert</groupId>
+			<artifactId>cNode</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
 			<groupId>com.boful</groupId>
 			<artifactId>fserver</artifactId>
 			<version>1.0</version>
