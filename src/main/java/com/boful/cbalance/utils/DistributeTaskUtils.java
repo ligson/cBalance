@@ -24,20 +24,22 @@ public class DistributeTaskUtils {
 	private static Logger logger = Logger.getLogger(DistributeTaskUtils.class);
 	private static List<CNodeClient> clientList = null;
 
-	@SuppressWarnings("static-access")
 	public static int[] initServerConfig() {
 		logger.debug("开始配置文件初始化...........");
 		int[] config = new int[3];
 		try {
-			URL url = ClassLoader.getSystemClassLoader().getSystemResource(
-					"conf/config.properties");
-			if (url == null) {
-				url = ClassLoader.getSystemClassLoader().getSystemResource(
-						"config.properties");
+			URL url = ClassLoader.getSystemResource("");
+			String path = url.getPath();
+			System.out.println("配置文件位置：" + url.getPath());
+			File configFile;
+			if (path.indexOf("conf") >= 0) {
+				configFile = new File(path, "config.properties");
+			} else {
+				configFile = new File(path, "conf/config.properties");
 			}
-			logger.debug("配置文件位置：" + url.getPath());
+			logger.debug("配置文件：" + configFile.getAbsolutePath());
 			InputStream in = new BufferedInputStream(new FileInputStream(
-					url.getPath()));
+					configFile));
 			Properties props = new Properties();
 			props.load(in);
 
