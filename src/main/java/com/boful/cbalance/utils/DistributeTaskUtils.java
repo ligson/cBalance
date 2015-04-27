@@ -24,10 +24,18 @@ public class DistributeTaskUtils {
 	private static Logger logger = Logger.getLogger(DistributeTaskUtils.class);
 	private static List<CNodeClient> clientList = null;
 
+	@SuppressWarnings("static-access")
 	public static int[] initServerConfig() {
+		logger.debug("开始配置文件初始化...........");
 		int[] config = new int[3];
 		try {
-			URL url = ClassLoader.getSystemResource("conf/config.properties");
+			URL url = ClassLoader.getSystemClassLoader().getSystemResource(
+					"conf/config.properties");
+			if (url == null) {
+				url = ClassLoader.getSystemClassLoader().getSystemResource(
+						"config.properties");
+			}
+			logger.debug("配置文件位置：" + url.getPath());
 			InputStream in = new BufferedInputStream(new FileInputStream(
 					url.getPath()));
 			Properties props = new Properties();
@@ -53,11 +61,15 @@ public class DistributeTaskUtils {
 
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "static-access" })
 	public static boolean initServerListConfig() {
 		try {
 			SAXReader SR = new SAXReader();
 			URL url = ClassLoader.getSystemResource("conf/serverlist.xml");
+			if (url == null) {
+				url = ClassLoader.getSystemClassLoader().getSystemResource(
+						"serverlist.xml");
+			}
 			Document doc = SR.read(new File(url.getPath()));
 			Element rootElement = doc.getRootElement();
 
