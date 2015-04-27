@@ -19,6 +19,7 @@ public class DistributeTaskUtils {
 	private static Logger logger = Logger.getLogger(DistributeTaskUtils.class);
 	private static List<CNodeClient> clientList = null;
 
+	@SuppressWarnings("unchecked")
 	public static boolean initServerConfig() {
 		try {
 			SAXReader SR = new SAXReader();
