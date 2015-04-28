@@ -28,18 +28,13 @@ public class DistributeTaskUtils {
 		logger.debug("开始配置文件初始化...........");
 		int[] config = new int[3];
 		try {
-			URL url = ClassLoader.getSystemResource("");
-			String path = url.getPath();
-			System.out.println("配置文件位置：" + url.getPath());
-			File configFile;
-			if (path.indexOf("conf") >= 0) {
-				configFile = new File(path, "config.properties");
-			} else {
-				configFile = new File(path, "conf/config.properties");
+			URL url = ClassLoader.getSystemResource("conf/config.properties");
+			if (url == null) {
+				url = ClassLoader.getSystemResource("config.properties");
 			}
-			logger.debug("配置文件：" + configFile.getAbsolutePath());
+			logger.debug("配置文件位置：" + url.getPath());
 			InputStream in = new BufferedInputStream(new FileInputStream(
-					configFile));
+					url.getPath()));
 			Properties props = new Properties();
 			props.load(in);
 
@@ -63,14 +58,13 @@ public class DistributeTaskUtils {
 
 	}
 
-	@SuppressWarnings({ "unchecked", "static-access" })
+	@SuppressWarnings("unchecked")
 	public static boolean initServerListConfig() {
 		try {
 			SAXReader SR = new SAXReader();
 			URL url = ClassLoader.getSystemResource("conf/serverlist.xml");
 			if (url == null) {
-				url = ClassLoader.getSystemClassLoader().getSystemResource(
-						"serverlist.xml");
+				url = ClassLoader.getSystemResource("serverlist.xml");
 			}
 			Document doc = SR.read(new File(url.getPath()));
 			Element rootElement = doc.getRootElement();
