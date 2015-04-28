@@ -32,7 +32,6 @@ public class DistributeTaskUtils {
 			if (url == null) {
 				url = ClassLoader.getSystemResource("config.properties");
 			}
-			logger.debug("配置文件位置：" + url.getPath());
 			InputStream in = new BufferedInputStream(new FileInputStream(
 					url.getPath()));
 			Properties props = new Properties();
