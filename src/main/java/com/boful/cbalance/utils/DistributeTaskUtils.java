@@ -16,14 +16,12 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import com.boful.cnode.client.CNodeClient;
 import com.boful.net.fserver.ClientMain;
 
 public class DistributeTaskUtils {
 
 	private static List<Map<String, String>> serverList = null;
 	private static Logger logger = Logger.getLogger(DistributeTaskUtils.class);
-	private static List<CNodeClient> cNodeClientList = null;
 	private static List<ClientMain> fServerClientList = null;
 
 	public static int[] initServerConfig() {
@@ -34,8 +32,8 @@ public class DistributeTaskUtils {
 			if (url == null) {
 				url = ClassLoader.getSystemResource("config.properties");
 			}
-			InputStream in = new BufferedInputStream(new FileInputStream(
-					url.getPath()));
+			// InputStream in = new BufferedInputStream(new FileInputStream(url.getPath()));
+			InputStream in = new BufferedInputStream(new FileInputStream(new File("src/main/resources/config.properties")));
 			Properties props = new Properties();
 			props.load(in);
 
@@ -67,7 +65,8 @@ public class DistributeTaskUtils {
 			if (url == null) {
 				url = ClassLoader.getSystemResource("serverlist.xml");
 			}
-			Document doc = SR.read(new File(url.getPath()));
+			// Document doc = SR.read(new File(url.getPath()));
+			Document doc = SR.read(new File("src/main/resources/serverlist.xml"));
 			Element rootElement = doc.getRootElement();
 
 			Element serverRootElement = rootElement.element("servers");
@@ -78,13 +77,10 @@ public class DistributeTaskUtils {
 
 			for (Element element : serverElementList) {
 				Element serverIpElement = element.element("ip");
-				Element serverCNodePortElement = element.element("cnodePort");
-				Element serverFSeverPortElement = element
-						.element("fserverPort");
+				Element serverPortElement = element.element("port");
 				Map<String, String> serverMap = new HashMap<String, String>();
 				serverMap.put("ip", serverIpElement.getText());
-				serverMap.put("cnodePort", serverCNodePortElement.getText());
-				serverMap.put("fserverPort", serverFSeverPortElement.getText());
+				serverMap.put("port", serverPortElement.getText());
 				serverList.add(serverMap);
 			}
 
@@ -98,24 +94,17 @@ public class DistributeTaskUtils {
 	}
 
 	public static boolean initClientList() {
-		cNodeClientList = new ArrayList<CNodeClient>();
 		fServerClientList = new ArrayList<ClientMain>();
 
 		String address = "";
-		int cnodePort = 0;
-		int fserverPort = 0;
+		int port = 0;
 		for (Map<String, String> server : serverList) {
 			try {
 				address = server.get("ip");
-				cnodePort = Integer.parseInt(server.get("cnodePort"));
-				fserverPort = Integer.parseInt(server.get("fserverPort"));
-
-				CNodeClient cNodeClient = new CNodeClient();
-				cNodeClient.connect(address, cnodePort);
-				cNodeClientList.add(cNodeClient);
+				port = Integer.parseInt(server.get("port"));
 
 				ClientMain fServerClientMain = new ClientMain();
-				fServerClientMain.connect(address, fserverPort);
+				fServerClientMain.connect(address, port);
 				fServerClientList.add(fServerClientMain);
 			} catch (Exception e) {
 				// 出现任何异常不处理，进行下一个客户端配置
@@ -123,10 +112,9 @@ public class DistributeTaskUtils {
 			}
 		}
 
-		maxCount = cNodeClientList.size();
+		maxCount = fServerClientList.size();
 		if (maxCount == 0) {
 			logger.debug("客户端初始化失败...........");
-			logger.debug("错误信息：服务器无法连接");
 			return false;
 		} else {
 			logger.debug("客户端初始化成功...........");
@@ -137,13 +125,14 @@ public class DistributeTaskUtils {
 	private static int maxCount = 0;
 	private static int nowIndex = 0;
 
-	public static CNodeClient getCNodeClient() {
+	public static ClientMain getClient() {
 
 		if (maxCount == 0) {
 			return null;
 		}
 
-		CNodeClient client = cNodeClientList.get(nowIndex);
+		ClientMain client = fServerClientList.get(nowIndex);
+
 		nowIndex++;
 		if (nowIndex == maxCount) {
 			nowIndex = 0;
@@ -152,7 +141,4 @@ public class DistributeTaskUtils {
 		return client;
 	}
 
-	public static ClientMain getFServerClient() {
-		return fServerClientList.get(nowIndex);
-	}
 }

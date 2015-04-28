@@ -1,18 +1,24 @@
 package com.boful.cbalance.server;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.Options;
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
 import com.boful.cbalance.utils.DistributeTaskUtils;
-import com.boful.cnode.client.CNodeClient;
 import com.boful.net.cnode.protocol.ConvertStateProtocol;
 import com.boful.net.cnode.protocol.ConvertTaskProtocol;
 import com.boful.net.cnode.protocol.Operation;
+import com.boful.net.fserver.ClientMain;
 
 public class BalanceServerHandler extends IoHandlerAdapter {
 
@@ -64,8 +70,8 @@ public class BalanceServerHandler extends IoHandlerAdapter {
 
 		ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
 
-		// 取得Client
-		CNodeClient client = DistributeTaskUtils.getCNodeClient();
+		// 取得FServerClient和CNodeClient
+		ClientMain client = DistributeTaskUtils.getClient();
 		if (client == null) {
 			convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
 			convertStateProtocol.setMessage("客户端 不存在！");
@@ -73,9 +79,27 @@ public class BalanceServerHandler extends IoHandlerAdapter {
 			return;
 		}
 
-		// 向转码服务器发送命令
-		client.send(convertTaskProtocol.getCmd(), session.getRemoteAddress());
+		// 从命令行中取出diskFile和destFile
+		String[] cmdArgs = StringUtils.split(convertTaskProtocol.getCmd(), " ");
+		CommandLineParser parser = new BasicParser();
+		Options options = new Options();
+		// 元文件
+		options.addOption("i", "diskFile", true, "");
+		// 目标文件
+		options.addOption("o", "destFile", true, "");
+		
+        options.addOption("operation", "operation", true, "");
+        options.addOption("id", "jobId", true, "");
+        options.addOption("vb", "videoBitrate", true, "");
+        options.addOption("ab", "audioBitrate", true, "");
+        options.addOption("size", "size", true, "");
 
+		CommandLine commandLine = parser.parse(options, cmdArgs);
+		File diskFile = new File(commandLine.getOptionValue("i"));
+		String destFile = commandLine.getOptionValue("o");
+
+		// 向FServer发送文件
+		client.send(diskFile, destFile);
 	}
 
 	@Override

@@ -25,8 +25,8 @@ public class CBalanceClient {
 	private static BofulCodec bofulCodec = new BofulCodec();
 	private static BalanceClientHandler clientHandler = new BalanceClientHandler();
 
-	public void connect(String address, int port) {
-		logger.debug("连接到：" + address + ":" + port);
+	public void connect(String address, int port) throws Exception {
+		logger.debug("开始连接文件服务器：" + address + ":" + port);
 
 		// 创建接受数据的过滤器
 		DefaultIoFilterChainBuilder chain = connector.getFilterChain();
@@ -42,6 +42,13 @@ public class CBalanceClient {
 		// 连接到服务器：
 		cf = connector.connect(new InetSocketAddress(address, port));
 		cf.awaitUninterruptibly();
+		try {
+			ioSession = cf.getSession();
+			logger.debug("文件服务器" + address + ":" + port + "连接成功！");
+		} catch (Exception e) {
+			logger.debug("文件服务器" + address + ":" + port + "未连接上！");
+			throw e;
+		}
 	}
 
 	public void send(String cmd) throws Exception {
