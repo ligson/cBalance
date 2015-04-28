@@ -65,7 +65,7 @@ public class BalanceServerHandler extends IoHandlerAdapter {
 		ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
 
 		// 取得Client
-		CNodeClient client = DistributeTaskUtils.getClient();
+		CNodeClient client = DistributeTaskUtils.getCNodeClient();
 		if (client == null) {
 			convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
 			convertStateProtocol.setMessage("客户端 不存在！");
