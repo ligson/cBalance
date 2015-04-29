@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -28,10 +29,8 @@ public class DistributeTaskUtils {
             if (url == null) {
                 url = ClassLoader.getSystemResource("config.properties");
             }
-            // InputStream in = new BufferedInputStream(new
-            // FileInputStream(url.getPath()));
-            InputStream in = new BufferedInputStream(new FileInputStream(new File(
-                    "src/main/resources/config.properties")));
+            //InputStream in = new BufferedInputStream(new FileInputStream(url.getPath()));
+            InputStream in = new BufferedInputStream(new FileInputStream(new File("src/main/resources/config.properties")));
             Properties props = new Properties();
             props.load(in);
 
@@ -69,6 +68,7 @@ public class DistributeTaskUtils {
             Element serverRootElement = rootElement.element("servers");
             List<Element> serverElementList = serverRootElement.elements("server");
 
+            fServerClientList = new ArrayList<FServerClient>();
             String address = "";
             int port = 0;
             for (Element element : serverElementList) {

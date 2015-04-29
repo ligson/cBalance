@@ -92,11 +92,11 @@ public class BalanceServerHandler extends IoHandlerAdapter {
             return;
         }
 
-        File diskFile = new File(commandMap.get("diskFile"));
-        String destFile = commandMap.get("destFile");
+        File diskFile = new File(commandMap.get("destFile"));
+        String destFile = commandMap.get("diskFile");
 
         session.setAttribute("cmd", convertTaskProtocol.getCmd());
-        // 向FServer发送文件
+        // 向转码服务器发送文件
         client.send(diskFile, destFile);
     }
 
