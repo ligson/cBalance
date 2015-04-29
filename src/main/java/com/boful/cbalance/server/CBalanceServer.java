@@ -13,54 +13,44 @@ import com.boful.cbalance.server.codec.BofulCodec;
 import com.boful.cbalance.utils.DistributeTaskUtils;
 
 public class CBalanceServer {
-	/***
-	 * 解码器定义
-	 */
-	private static BofulCodec bofulCodec = new BofulCodec();
-	/***
-	 * 服务器端业务处理
-	 */
-	private static BalanceServerHandler serverHandler = new BalanceServerHandler();
+    /***
+     * 解码器定义
+     */
+    private static BofulCodec bofulCodec = new BofulCodec();
+    /***
+     * 服务器端业务处理
+     */
+    private static BalanceServerHandler serverHandler = new BalanceServerHandler();
 
-	private static NioSocketAcceptor acceptor = new NioSocketAcceptor();
-	private static Logger logger = Logger.getLogger(CBalanceServer.class);
+    private static NioSocketAcceptor acceptor = new NioSocketAcceptor();
+    private static Logger logger = Logger.getLogger(CBalanceServer.class);
 
-	public static void main(String[] args) throws Exception {
-		logger.info("==================");
-		startServer();
-		
-	}
+    public static void main(String[] args) throws Exception {
+        startServer();
 
-	public static void startServer() {
-		int[] config = DistributeTaskUtils.initServerConfig();
-		acceptor.getFilterChain().addLast("logger", new LoggingFilter());
-		acceptor.getFilterChain().addLast("codec",
-				new ProtocolCodecFilter(bofulCodec));
-		acceptor.setHandler(serverHandler);
+    }
 
-		acceptor.getSessionConfig().setReadBufferSize(config[0]);
-		acceptor.getSessionConfig()
-				.setIdleTime(IdleStatus.BOTH_IDLE, config[1]);
-		try {
-			acceptor.bind(new InetSocketAddress(config[2]));
-		} catch (IOException e) {
-			logger.debug("服务器启动失败...........");
-			logger.debug("错误信息：" + e.getMessage());
-			System.exit(0);
-		}
-		logger.debug("starting...........");
-
-		// 初始化cNode服务器列表
-		boolean initState = DistributeTaskUtils.initServerListConfig();
-		if (!initState) {
-			logger.debug("程序退出...........");
-			System.exit(0);
-		}
-		// 初始化cNode客户端
-		initState = DistributeTaskUtils.initClientList();
-		if (!initState) {
-			logger.debug("程序退出...........");
-			System.exit(0);
-		}
-	}
+    public static void startServer() {
+        logger.debug("服务器开始启动...........");
+        try {
+            int[] config = DistributeTaskUtils.initServerConfig();
+            acceptor.getFilterChain().addLast("logger", new LoggingFilter());
+            acceptor.getFilterChain().addLast("codec", new ProtocolCodecFilter(bofulCodec));
+            acceptor.setHandler(serverHandler);
+            acceptor.getSessionConfig().setReadBufferSize(config[0]);
+            acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, config[1]);
+            acceptor.bind(new InetSocketAddress(config[2]));
+        } catch (IOException e) {
+            logger.debug("服务器启动失败...........");
+            logger.debug("错误信息：" + e.getMessage());
+            System.exit(0);
+        }
+        // 初始化客户端列表
+        boolean initState = DistributeTaskUtils.initClientList();
+        if (!initState) {
+            logger.debug("服务器启动失败...........");
+            System.exit(0);
+        }
+        logger.debug("服务器启动成功...........");
+    }
 }

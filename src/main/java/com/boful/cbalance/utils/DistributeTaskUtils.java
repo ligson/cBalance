@@ -5,10 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -20,125 +17,109 @@ import com.boful.net.fserver.ClientMain;
 
 public class DistributeTaskUtils {
 
-	private static List<Map<String, String>> serverList = null;
-	private static Logger logger = Logger.getLogger(DistributeTaskUtils.class);
-	private static List<ClientMain> fServerClientList = null;
+    private static Logger logger = Logger.getLogger(DistributeTaskUtils.class);
+    private static List<ClientMain> fServerClientList = null;
 
-	public static int[] initServerConfig() {
-		logger.debug("开始配置文件初始化...........");
-		int[] config = new int[3];
-		try {
-			URL url = ClassLoader.getSystemResource("conf/config.properties");
-			if (url == null) {
-				url = ClassLoader.getSystemResource("config.properties");
-			}
-			// InputStream in = new BufferedInputStream(new FileInputStream(url.getPath()));
-			InputStream in = new BufferedInputStream(new FileInputStream(new File("src/main/resources/config.properties")));
-			Properties props = new Properties();
-			props.load(in);
+    public static int[] initServerConfig() {
+        logger.debug("服务器配置文件初始化...........");
+        int[] config = new int[3];
+        try {
+            URL url = ClassLoader.getSystemResource("conf/config.properties");
+            if (url == null) {
+                url = ClassLoader.getSystemResource("config.properties");
+            }
+            // InputStream in = new BufferedInputStream(new
+            // FileInputStream(url.getPath()));
+            InputStream in = new BufferedInputStream(new FileInputStream(new File(
+                    "src/main/resources/config.properties")));
+            Properties props = new Properties();
+            props.load(in);
 
-			// 取得内容
-			int bufferSize = Integer.parseInt(props
-					.getProperty("server.bufferSize"));
-			int idleTime = Integer.parseInt(props
-					.getProperty("server.idleTime"));
-			int port = Integer.parseInt(props.getProperty("server.port"));
+            // 取得内容
+            int bufferSize = Integer.parseInt(props.getProperty("server.bufferSize"));
+            int idleTime = Integer.parseInt(props.getProperty("server.idleTime"));
+            int port = Integer.parseInt(props.getProperty("server.port"));
 
-			config[0] = bufferSize;
-			config[1] = idleTime;
-			config[2] = port;
+            config[0] = bufferSize;
+            config[1] = idleTime;
+            config[2] = port;
 
-			return config;
-		} catch (Exception e) {
-			logger.debug("配置文件初始化失败...........");
-			logger.debug("错误信息：" + e.getMessage());
-			return config;
-		}
+            return config;
+        } catch (Exception e) {
+            logger.debug("服务器配置文件初始化失败...........");
+            logger.debug("错误信息：" + e.getMessage());
+            return config;
+        }
 
-	}
+    }
 
-	@SuppressWarnings("unchecked")
-    public static boolean initServerListConfig() {
-		try {
-			SAXReader SR = new SAXReader();
-			URL url = ClassLoader.getSystemResource("conf/serverlist.xml");
-			if (url == null) {
-				url = ClassLoader.getSystemResource("serverlist.xml");
-			}
-			// Document doc = SR.read(new File(url.getPath()));
-			Document doc = SR.read(new File("src/main/resources/serverlist.xml"));
-			Element rootElement = doc.getRootElement();
+    @SuppressWarnings("unchecked")
+    public static boolean initClientList() {
+        logger.debug("客户端列表初始化...........");
+        try {
+            SAXReader SR = new SAXReader();
+            URL url = ClassLoader.getSystemResource("conf/serverlist.xml");
+            if (url == null) {
+                url = ClassLoader.getSystemResource("serverlist.xml");
+            }
+            // Document doc = SR.read(new File(url.getPath()));
+            Document doc = SR.read(new File("src/main/resources/serverlist.xml"));
+            Element rootElement = doc.getRootElement();
 
-			Element serverRootElement = rootElement.element("servers");
-			List<Element> serverElementList = serverRootElement
-					.elements("server");
+            Element serverRootElement = rootElement.element("servers");
+            List<Element> serverElementList = serverRootElement.elements("server");
 
-			serverList = new ArrayList<Map<String, String>>();
+            String address = "";
+            int port = 0;
+            for (Element element : serverElementList) {
+                Element serverIpElement = element.element("ip");
+                Element serverPortElement = element.element("port");
 
-			for (Element element : serverElementList) {
-				Element serverIpElement = element.element("ip");
-				Element serverPortElement = element.element("port");
-				Map<String, String> serverMap = new HashMap<String, String>();
-				serverMap.put("ip", serverIpElement.getText());
-				serverMap.put("port", serverPortElement.getText());
-				serverList.add(serverMap);
-			}
+                try {
+                    address = serverIpElement.getText();
+                    port = Integer.parseInt(serverPortElement.getText());
 
-			logger.debug("配置文件初始化成功...........");
-			return true;
-		} catch (Exception e) {
-			logger.debug("配置文件初始化失败...........");
-			logger.debug("错误信息：" + e.getMessage());
-			return false;
-		}
-	}
+                    ClientMain fServerClientMain = new ClientMain();
+                    fServerClientMain.connect(address, port);
+                    fServerClientList.add(fServerClientMain);
+                } catch (Exception e) {
+                    // 出现任何异常不处理，进行下一个客户端配置
+                    continue;
+                }
+            }
 
-	public static boolean initClientList() {
-		fServerClientList = new ArrayList<ClientMain>();
+            maxCount = fServerClientList.size();
+            if (maxCount == 0) {
+                logger.debug("客户端初始化失败...........");
+                return false;
+            }
 
-		String address = "";
-		int port = 0;
-		for (Map<String, String> server : serverList) {
-			try {
-				address = server.get("ip");
-				port = Integer.parseInt(server.get("port"));
+            logger.debug("客户端列表初始化成功...........");
+            return true;
+        } catch (Exception e) {
+            logger.debug("客户端列表初始化失败...........");
+            logger.debug("错误信息：" + e.getMessage());
+            return false;
+        }
+    }
 
-				ClientMain fServerClientMain = new ClientMain();
-				fServerClientMain.connect(address, port);
-				fServerClientList.add(fServerClientMain);
-			} catch (Exception e) {
-				// 出现任何异常不处理，进行下一个客户端配置
-				continue;
-			}
-		}
+    private static int maxCount = 0;
+    private static int nowIndex = 0;
 
-		maxCount = fServerClientList.size();
-		if (maxCount == 0) {
-			logger.debug("客户端初始化失败...........");
-			return false;
-		} else {
-			logger.debug("客户端初始化成功...........");
-			return true;
-		}
-	}
+    public static ClientMain getClient() {
 
-	private static int maxCount = 0;
-	private static int nowIndex = 0;
+        if (maxCount == 0) {
+            return null;
+        }
 
-	public static ClientMain getClient() {
+        ClientMain client = fServerClientList.get(nowIndex);
 
-		if (maxCount == 0) {
-			return null;
-		}
+        nowIndex++;
+        if (nowIndex == maxCount) {
+            nowIndex = 0;
+        }
 
-		ClientMain client = fServerClientList.get(nowIndex);
-
-		nowIndex++;
-		if (nowIndex == maxCount) {
-			nowIndex = 0;
-		}
-
-		return client;
-	}
+        return client;
+    }
 
 }
