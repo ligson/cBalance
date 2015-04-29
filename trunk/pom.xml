@@ -167,12 +167,12 @@
 		</dependency>
 		<dependency>
 			<groupId>com.boful</groupId>
-			<artifactId>bofulnetprotocol</artifactId>
+			<artifactId>fserver</artifactId>
 			<version>1.0</version>
 		</dependency>
 		<dependency>
 			<groupId>com.boful</groupId>
-			<artifactId>fserver</artifactId>
+			<artifactId>bofulnetprotocol</artifactId>
 			<version>1.0</version>
 		</dependency>
 	</dependencies>
