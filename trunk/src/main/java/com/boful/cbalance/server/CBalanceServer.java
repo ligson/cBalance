@@ -27,7 +27,6 @@ public class CBalanceServer {
 
     public static void main(String[] args) throws Exception {
         startServer();
-
     }
 
     public static void startServer() {
