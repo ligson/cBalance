@@ -58,7 +58,7 @@ public class DistributeTaskUtils {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static boolean initServerListConfig() {
+    public static boolean initServerListConfig() {
 		try {
 			SAXReader SR = new SAXReader();
 			URL url = ClassLoader.getSystemResource("conf/serverlist.xml");
