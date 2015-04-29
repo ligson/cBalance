@@ -13,12 +13,12 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import com.boful.net.fserver.ClientMain;
+import com.boful.net.client.FServerClient;
 
 public class DistributeTaskUtils {
 
     private static Logger logger = Logger.getLogger(DistributeTaskUtils.class);
-    private static List<ClientMain> fServerClientList = null;
+    private static List<FServerClient> fServerClientList = null;
 
     public static int[] initServerConfig() {
         logger.debug("服务器配置文件初始化...........");
@@ -79,9 +79,9 @@ public class DistributeTaskUtils {
                     address = serverIpElement.getText();
                     port = Integer.parseInt(serverPortElement.getText());
 
-                    ClientMain fServerClientMain = new ClientMain();
-                    fServerClientMain.connect(address, port);
-                    fServerClientList.add(fServerClientMain);
+                    FServerClient fServerClient = new FServerClient();
+                    fServerClient.connect(address, port);
+                    fServerClientList.add(fServerClient);
                 } catch (Exception e) {
                     // 出现任何异常不处理，进行下一个客户端配置
                     continue;
@@ -106,13 +106,13 @@ public class DistributeTaskUtils {
     private static int maxCount = 0;
     private static int nowIndex = 0;
 
-    public static ClientMain getClient() {
+    public static FServerClient getClient() {
 
         if (maxCount == 0) {
             return null;
         }
 
-        ClientMain client = fServerClientList.get(nowIndex);
+        FServerClient client = fServerClientList.get(nowIndex);
 
         nowIndex++;
         if (nowIndex == maxCount) {
