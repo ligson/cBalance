@@ -12,10 +12,10 @@ import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
 import com.boful.cbalance.utils.DistributeTaskUtils;
+import com.boful.net.client.FServerClient;
 import com.boful.net.cnode.protocol.ConvertStateProtocol;
 import com.boful.net.cnode.protocol.ConvertTaskProtocol;
 import com.boful.net.cnode.protocol.Operation;
-import com.boful.net.fserver.ClientMain;
 import com.boful.net.utils.CommandLineUtils;
 
 public class BalanceServerHandler extends IoHandlerAdapter {
@@ -67,7 +67,7 @@ public class BalanceServerHandler extends IoHandlerAdapter {
         ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
 
         // 取得FServerClient和CNodeClient
-        ClientMain client = DistributeTaskUtils.getClient();
+        FServerClient client = DistributeTaskUtils.getClient();
         if (client == null) {
             convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
             convertStateProtocol.setMessage("客户端 不存在！");
