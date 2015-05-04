@@ -7,8 +7,8 @@
 		</server>
 		<server>
 			<ip>127.0.0.1</ip>
-			<fserverPort>8000</fserverPort>
-			<cnodePort>9000</cnodePort>
+			<fserverPort>8001</fserverPort>
+			<cnodePort>9001</cnodePort>
 		</server>
 	</servers>
 </convertConfig>
