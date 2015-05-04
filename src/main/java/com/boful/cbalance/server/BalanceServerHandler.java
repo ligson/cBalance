@@ -96,7 +96,7 @@ public class BalanceServerHandler extends IoHandlerAdapter {
         File diskFile = new File(commandMap.get("destFile"));
         String destFile = commandMap.get("diskFile");
 
-        CNodeTranscodeEvent event = new CNodeTranscodeEvent();
+        CNodeTranscodeEvent event = new CNodeTranscodeEvent(session);
         event.setCmd(convertTaskProtocol.getCmd());
         event.setCNodeClient(DistributeTaskUtils.getCNodeClient(client.getIndex()));
         client.setTranscodeEvent(event);
