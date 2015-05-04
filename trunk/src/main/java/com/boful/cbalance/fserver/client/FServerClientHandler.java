@@ -8,8 +8,8 @@ import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
+import com.boful.cbalance.cnode.client.CNodeClient;
 import com.boful.cbalance.utils.DistributeTaskUtils;
-import com.boful.net.client.CNodeClient;
 import com.boful.net.fserver.protocol.Operation;
 import com.boful.net.fserver.protocol.SendStateProtocol;
 
