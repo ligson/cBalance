@@ -43,6 +43,7 @@ public class FServerClientHandler extends IoHandlerAdapter {
                 SendStateProtocol sendStateProtocol = (SendStateProtocol) message;
                 if (sendStateProtocol.getState() == Operation.TAG_STATE_SEND_OK) {
                     logger.info("文件" + sendStateProtocol.getSrcFile().getAbsolutePath() + "传输成功！");
+                    System.out.println("文件" + sendStateProtocol.getSrcFile().getAbsolutePath() + "传输成功！");
                     // 调用cnode
                     int clientIndex = (int) session.getAttribute("clientIndex");
                     CNodeClient client = DistributeTaskUtils.getCNodeClient(clientIndex);
