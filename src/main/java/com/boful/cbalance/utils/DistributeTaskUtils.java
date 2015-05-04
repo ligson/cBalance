@@ -14,8 +14,8 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.boful.cbalance.cnode.client.CNodeClient;
 import com.boful.cbalance.fserver.client.FServerClient;
-import com.boful.net.client.CNodeClient;
 
 public class DistributeTaskUtils {
 
