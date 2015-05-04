@@ -125,4 +125,8 @@ public class FServerClient {
     public void setCmd(String cmd) {
         ioSession.setAttribute("cmd", cmd);
     }
+
+    public void setIndex(int index) {
+        ioSession.setAttribute("clientIndex", index);
+    }
 }

@@ -32,7 +32,8 @@ public class DistributeTaskUtils {
                 url = ClassLoader.getSystemResource("config.properties");
             }
             InputStream in = new BufferedInputStream(new FileInputStream(url.getPath()));
-            //InputStream in = new BufferedInputStream(new FileInputStream(new File("src/main/resources/config.properties")));
+            // InputStream in = new BufferedInputStream(new FileInputStream(new
+            // File("src/main/resources/config.properties")));
             Properties props = new Properties();
             props.load(in);
 
@@ -64,7 +65,8 @@ public class DistributeTaskUtils {
                 url = ClassLoader.getSystemResource("serverlist.xml");
             }
             Document doc = SR.read(new File(url.getPath()));
-            //Document doc = SR.read(new File("src/main/resources/serverlist.xml"));
+            // Document doc = SR.read(new
+            // File("src/main/resources/serverlist.xml"));
             Element rootElement = doc.getRootElement();
 
             Element serverRootElement = rootElement.element("servers");
@@ -124,6 +126,7 @@ public class DistributeTaskUtils {
         }
 
         FServerClient client = fServerClientList.get(nowIndex);
+        client.setIndex(nowIndex);
 
         nowIndex++;
         if (nowIndex == maxCount) {
@@ -133,8 +136,9 @@ public class DistributeTaskUtils {
         return client;
     }
 
-    public static CNodeClient getCNodeClient() {
-        return cNodeClientList.get(nowIndex);
+    public static CNodeClient getCNodeClient(int clientIndex) {
+        System.out.println("clientIndex:"+clientIndex);
+        return cNodeClientList.get(clientIndex);
     }
 
 }
