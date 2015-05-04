@@ -63,8 +63,7 @@ public class CBalanceClient {
     }
     
     public void setTranscodeEvent(TranscodeEvent transcodeEvent) {
-        clientHandler = (BalanceClientHandler) connector.getHandler();
-        clientHandler.setTranscodeEvent(transcodeEvent);
+        ioSession.setAttribute("transcodeEvent", transcodeEvent);
     }
 
     public void disconnect() {
