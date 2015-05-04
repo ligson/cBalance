@@ -50,6 +50,7 @@ public class CBalanceServer {
             logger.debug("服务器启动失败...........");
             System.exit(0);
         }
+        System.out.println("服务器启动成功...........");
         logger.debug("服务器启动成功...........");
     }
 }
