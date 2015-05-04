@@ -15,7 +15,7 @@ public class CNodeTranscodeEvent implements TranscodeEvent {
     public void onSubmitSuccess(DiskFile diskFile, String jobId) {
         System.out.println("文件" + diskFile.getAbsolutePath() + "上传到任务分发服务器！");
         try {
-            // cNodeClient.setTranscodeEvent(this);
+            cNodeClient.setTranscodeEvent(this);
             // 转码任务分配
             cNodeClient.send(cmd);
         } catch (Exception e) {
