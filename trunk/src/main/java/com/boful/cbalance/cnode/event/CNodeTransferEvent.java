@@ -1,33 +1,37 @@
 package com.boful.cbalance.cnode.event;
 
+import java.io.File;
+
 import org.apache.mina.core.session.IoSession;
 
 import com.boful.cbalance.cnode.client.CNodeClient;
 import com.boful.convert.core.TranscodeEvent;
-import com.boful.convert.model.DiskFile;
+import com.boful.net.client.event.TransferEvent;
 import com.boful.net.cnode.protocol.ConvertStateProtocol;
 
-public class CNodeTranscodeEvent implements TranscodeEvent {
+public class CNodeTransferEvent implements TransferEvent {
 
     private IoSession session;
 
-    public CNodeTranscodeEvent(IoSession session) {
+    public CNodeTransferEvent(IoSession session) {
         this.session = session;
     }
 
     @Override
-    public void onSubmitFail(DiskFile diskFile, String errorMessage, String jobId) {
-        System.out.println("文件" + diskFile.getAbsolutePath() + "上传失败！");
+    public void onStart(File src, File dest) {
+        System.out.println("文件" + src.getAbsolutePath() + "开始上传！");
+        ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
+        convertStateProtocol.setState(ConvertStateProtocol.STATE_CONVERTING);
+        convertStateProtocol.setMessage("文件" + src.getAbsolutePath() + "开始上传！");
+        session.write(convertStateProtocol);
     }
 
     @Override
-    public void onSubmitSuccess(DiskFile diskFile, String jobId) {
-        cNodeFile = diskFile.getAbsolutePath();
-        System.out.println("文件" + cNodeFile + "上传到任务分发服务器！");
-
+    public void onSuccess(File src, File dest) {
+        System.out.println("文件" + src.getAbsolutePath() + "上传完成！");
         try {
             System.out.println("CNodeTranscodeEvent : " + this);
-            cNodeClient.setTranscodeEvent(this);
+            cNodeClient.setTranscodeEvent(transcodeEvent);
             // 转码任务分配
             cNodeClient.send(cmd);
         } catch (Exception e) {
@@ -40,30 +44,20 @@ public class CNodeTranscodeEvent implements TranscodeEvent {
     }
 
     @Override
-    public void onStartTranscode(DiskFile diskFile, String jobId) {
-        System.out.println("onStartTranscode");
-    }
-
-    @Override
-    public void onTranscodeSuccess(DiskFile diskFile, DiskFile destFile, String jobId) {
-        System.out.println("文件" + cNodeFile + "转码成功！");
+    public void onTransfer(File src, File dest, int process) {
+        System.out.println("文件" + src.getAbsolutePath() + "上传进度:" + process + "%");
         ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
-        convertStateProtocol.setState(ConvertStateProtocol.STATE_SUCCESS);
-        convertStateProtocol.setMessage("文件" + cNodeFile + "转码成功！");
+        convertStateProtocol.setState(ConvertStateProtocol.STATE_CONVERTING);
+        convertStateProtocol.setMessage("文件" + src.getAbsolutePath() + "上传进度:" + process + "%");
         session.write(convertStateProtocol);
     }
 
     @Override
-    public void onTranscode(DiskFile diskFile, int process, String jobId) {
-        System.out.println("onTranscode");
-    }
-
-    @Override
-    public void onTranscodeFail(DiskFile diskFile, String errorMessage, String jobId) {
-        System.out.println("文件" + cNodeFile + "转码失败！");
+    public void onFail(File src, File dest, String message) {
+        System.out.println("文件" + src.getAbsolutePath() + "上传失败！");
         ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
         convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-        convertStateProtocol.setMessage(errorMessage);
+        convertStateProtocol.setMessage("文件" + src.getAbsolutePath() + "上传失败！");
         session.write(convertStateProtocol);
     }
 
@@ -83,5 +77,9 @@ public class CNodeTranscodeEvent implements TranscodeEvent {
         this.cNodeClient = cNodeClient;
     }
 
-    private String cNodeFile;
+    private TranscodeEvent transcodeEvent;
+
+    public void setTranscodeEvent(TranscodeEvent event) {
+        this.transcodeEvent = event;
+    }
 }
