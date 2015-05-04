@@ -2,19 +2,13 @@
 	<servers>
 		<server>
 			<ip>192.168.1.75</ip>
-			<port>8000</port>
+			<fserverPort>8000</fserverPort>
+			<cnodePort>9000</cnodePort>
 		</server>
 		<server>
-			<ip>192.168.1.75</ip>
-			<port>8001</port>
-		</server>
-		<server>
-			<ip>192.168.1.75</ip>
-			<port>8002</port>
-		</server>
-		<server>
-			<ip>192.168.1.75</ip>
-			<port>8003</port>
+			<ip>127.0.0.1</ip>
+			<fserverPort>8000</fserverPort>
+			<cnodePort>9000</cnodePort>
 		</server>
 	</servers>
 </convertConfig>
