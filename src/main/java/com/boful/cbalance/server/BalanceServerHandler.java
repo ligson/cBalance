@@ -11,8 +11,8 @@ import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
-import com.boful.cbalance.fserver.client.FServerClient;
 import com.boful.cbalance.utils.DistributeTaskUtils;
+import com.boful.net.client.FServerClient;
 import com.boful.net.cnode.protocol.ConvertStateProtocol;
 import com.boful.net.cnode.protocol.ConvertTaskProtocol;
 import com.boful.net.cnode.protocol.Operation;
