@@ -81,9 +81,8 @@ public class CNodeClient {
         ioSession.getCloseFuture().awaitUninterruptibly();
         connector.dispose();
     }
-    
+
     public void setTranscodeEvent(TranscodeEvent transcodeEvent) {
-        clientHandler = (NodeClientHandler) connector.getHandler();
-        clientHandler.setTranscodeEvent(transcodeEvent);
+        ioSession.setAttribute("transcodeEvent", transcodeEvent);
     }
 }

@@ -13,6 +13,7 @@ import org.apache.mina.core.session.IoSession;
 
 import com.boful.cbalance.cnode.event.CNodeTransferEvent;
 import com.boful.cbalance.utils.DistributeTaskUtils;
+import com.boful.convert.core.TranscodeEvent;
 import com.boful.net.client.FServerClient;
 import com.boful.net.cnode.protocol.ConvertStateProtocol;
 import com.boful.net.cnode.protocol.ConvertTaskProtocol;
@@ -99,6 +100,8 @@ public class BalanceServerHandler extends IoHandlerAdapter {
         CNodeTransferEvent event = new CNodeTransferEvent(session);
         event.setCmd(convertTaskProtocol.getCmd());
         event.setCNodeClient(DistributeTaskUtils.getCNodeClient(client.getIndex()));
+        TranscodeEvent transcodeEvent = (TranscodeEvent) session.getAttribute("transcodeEvent");
+        event.setTranscodeEvent(transcodeEvent);
 
         // 向转码服务器发送文件
         client.send(diskFile, destFile, event);
