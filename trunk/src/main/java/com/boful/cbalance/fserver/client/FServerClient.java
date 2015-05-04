@@ -13,6 +13,7 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
 import com.boful.common.file.utils.FileUtils;
+import com.boful.convert.core.TranscodeEvent;
 import com.boful.net.fserver.codec.BofulCodec;
 import com.boful.net.fserver.protocol.DownloadProtocol;
 import com.boful.net.fserver.protocol.TransferProtocol;
@@ -128,5 +129,10 @@ public class FServerClient {
 
     public void setIndex(int index) {
         ioSession.setAttribute("clientIndex", index);
+    }
+    
+    public void setTranscodeEvent(TranscodeEvent transcodeEvent) {
+        clientHandler = (FServerClientHandler) connector.getHandler();
+        clientHandler.setTranscodeEvent(transcodeEvent);
     }
 }

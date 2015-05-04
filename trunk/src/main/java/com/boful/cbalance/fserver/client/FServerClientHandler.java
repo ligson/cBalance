@@ -9,6 +9,7 @@ import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
 import com.boful.cbalance.utils.DistributeTaskUtils;
+import com.boful.convert.core.TranscodeEvent;
 import com.boful.net.client.CNodeClient;
 import com.boful.net.fserver.protocol.Operation;
 import com.boful.net.fserver.protocol.SendStateProtocol;
@@ -17,6 +18,7 @@ public class FServerClientHandler extends IoHandlerAdapter {
 
     private Set<IoSession> sessions = new HashSet<IoSession>();
     private static Logger logger = Logger.getLogger(FServerClientHandler.class);
+    private TranscodeEvent transcodeEvent;
 
     @Override
     public void sessionClosed(IoSession session) throws Exception {
@@ -50,6 +52,7 @@ public class FServerClientHandler extends IoHandlerAdapter {
                         logger.info("转码服务器连接失败！");
                         return;
                     }
+                    client.setTranscodeEvent(transcodeEvent);
                     client.send(session.getAttribute("cmd").toString());
                 } else {
                     logger.info("文件" + sendStateProtocol.getSrcFile().getAbsolutePath() + "传输失败！");
@@ -58,13 +61,13 @@ public class FServerClientHandler extends IoHandlerAdapter {
         }
     }
 
-    @Override
-    public void messageSent(IoSession session, Object message) throws Exception {
-        super.messageSent(session, message);
-    }
 
     @Override
     public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
         cause.printStackTrace();
+    }
+    
+    public void setTranscodeEvent(TranscodeEvent transcodeEvent) {
+        this.transcodeEvent = transcodeEvent;
     }
 }
