@@ -137,7 +137,6 @@ public class DistributeTaskUtils {
     }
 
     public static CNodeClient getCNodeClient(int clientIndex) {
-        System.out.println("clientIndex:"+clientIndex);
         return cNodeClientList.get(clientIndex);
     }
 
