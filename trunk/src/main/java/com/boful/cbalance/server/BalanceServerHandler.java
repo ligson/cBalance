@@ -76,6 +76,7 @@ public class BalanceServerHandler extends IoHandlerAdapter {
         }
 
         // 从命令行中取出diskFile和destFile
+        System.out.println(convertTaskProtocol.getCmd());
         Map<String, String> commandMap = CommandLineUtils.parse(convertTaskProtocol.getCmd());
         if (commandMap == null) {
             convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
