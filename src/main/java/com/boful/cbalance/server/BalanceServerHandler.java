@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
-import com.boful.cbalance.cnode.event.CNodeTranscodeEvent;
 import com.boful.cbalance.cnode.event.CNodeTransferEvent;
 import com.boful.cbalance.utils.DistributeTaskUtils;
 import com.boful.net.client.FServerClient;
