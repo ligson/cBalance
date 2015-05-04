@@ -10,7 +10,6 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
 import com.boful.cbalance.server.codec.BofulCodec;
-import com.boful.convert.core.TranscodeEvent;
 import com.boful.net.cnode.protocol.ConvertTaskProtocol;
 
 public class CBalanceClient {
@@ -60,11 +59,6 @@ public class CBalanceClient {
         } else {
             throw new Exception("未连接上");
         }
-    }
-
-    public void setTranscodeEvent(TranscodeEvent transcodeEvent) {
-        clientHandler = (BalanceClientHandler) connector.getHandler();
-        clientHandler.setTranscodeEvent(transcodeEvent);
     }
 
     public void disconnect() {
