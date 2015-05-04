@@ -14,12 +14,14 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import com.boful.net.client.FServerClient;
+import com.boful.cbalance.fserver.client.FServerClient;
+import com.boful.net.client.CNodeClient;
 
 public class DistributeTaskUtils {
 
     private static Logger logger = Logger.getLogger(DistributeTaskUtils.class);
     private static List<FServerClient> fServerClientList = null;
+    private static List<CNodeClient> cNodeClientList = null;
 
     public static int[] initServerConfig() {
         logger.debug("服务器配置文件初始化...........");
@@ -69,19 +71,28 @@ public class DistributeTaskUtils {
             List<Element> serverElementList = serverRootElement.elements("server");
 
             fServerClientList = new ArrayList<FServerClient>();
+            cNodeClientList = new ArrayList<CNodeClient>();
             String address = "";
-            int port = 0;
+            int serverPort = 0;
+            int nodePort = 0;
             for (Element element : serverElementList) {
                 Element serverIpElement = element.element("ip");
-                Element serverPortElement = element.element("port");
+                Element serverPortElement = element.element("fserverPort");
+                Element nodePortElement = element.element("cnodePort");
 
                 try {
                     address = serverIpElement.getText();
-                    port = Integer.parseInt(serverPortElement.getText());
+                    serverPort = Integer.parseInt(serverPortElement.getText());
 
                     FServerClient fServerClient = new FServerClient();
-                    fServerClient.connect(address, port);
+                    fServerClient.connect(address, serverPort);
                     fServerClientList.add(fServerClient);
+
+                    nodePort = Integer.parseInt(nodePortElement.getText());
+                    CNodeClient cNodeClient = new CNodeClient();
+                    cNodeClient.connect(address, nodePort);
+                    cNodeClientList.add(cNodeClient);
+
                 } catch (Exception e) {
                     // 出现任何异常不处理，进行下一个客户端配置
                     continue;
@@ -120,6 +131,10 @@ public class DistributeTaskUtils {
         }
 
         return client;
+    }
+
+    public static CNodeClient getCNodeClient() {
+        return cNodeClientList.get(nowIndex);
     }
 
 }

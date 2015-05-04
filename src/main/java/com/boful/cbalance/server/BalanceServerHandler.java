@@ -11,8 +11,8 @@ import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
+import com.boful.cbalance.fserver.client.FServerClient;
 import com.boful.cbalance.utils.DistributeTaskUtils;
-import com.boful.net.client.FServerClient;
 import com.boful.net.cnode.protocol.ConvertStateProtocol;
 import com.boful.net.cnode.protocol.ConvertTaskProtocol;
 import com.boful.net.cnode.protocol.Operation;
@@ -76,7 +76,6 @@ public class BalanceServerHandler extends IoHandlerAdapter {
         }
 
         // 从命令行中取出diskFile和destFile
-        System.out.println(convertTaskProtocol.getCmd());
         Map<String, String> commandMap = CommandLineUtils.parse(convertTaskProtocol.getCmd());
         if (commandMap == null) {
             convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
@@ -97,6 +96,7 @@ public class BalanceServerHandler extends IoHandlerAdapter {
         String destFile = commandMap.get("diskFile");
 
         session.setAttribute("cmd", convertTaskProtocol.getCmd());
+        client.setCmd(convertTaskProtocol.getCmd());
         // 向转码服务器发送文件
         client.send(diskFile, destFile);
     }
