@@ -1,6 +1,7 @@
 package com.boful.cbalance.cnode.event;
 
 import java.io.File;
+import java.util.Map;
 
 import org.apache.mina.core.session.IoSession;
 
@@ -8,6 +9,7 @@ import com.boful.cbalance.cnode.client.CNodeClient;
 import com.boful.convert.core.TranscodeEvent;
 import com.boful.net.client.event.TransferEvent;
 import com.boful.net.cnode.protocol.ConvertStateProtocol;
+import com.boful.net.utils.CommandLineUtils;
 
 public class CNodeTransferEvent implements TransferEvent {
 
@@ -32,8 +34,22 @@ public class CNodeTransferEvent implements TransferEvent {
         try {
             System.out.println("CNodeTranscodeEvent : " + this);
             cNodeClient.setTranscodeEvent(transcodeEvent);
+
+            Map<String, String> cmdMap = CommandLineUtils.parse(cmd);
+            // 重新生成cmd
+            String newCmd = "";
+            newCmd += "-operation " + cmdMap.get("operation");
+            newCmd += " -id " + cmdMap.get("jobid");
+            newCmd += " -i " + dest.getAbsolutePath();
+            newCmd += " -o " + dest.getAbsolutePath();
+            newCmd += " -vb " + cmdMap.get("videoBitrate");
+            newCmd += " -ab " + cmdMap.get("audioBitrate");
+            if (cmdMap.containsKey("size")) {
+                newCmd += " -size " + cmdMap.get("size");
+            }
+
             // 转码任务分配
-            cNodeClient.send(cmd);
+            cNodeClient.send(newCmd);
         } catch (Exception e) {
             System.out.println("任务分发失败！");
             ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
