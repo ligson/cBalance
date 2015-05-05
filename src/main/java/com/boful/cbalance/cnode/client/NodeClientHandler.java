@@ -40,6 +40,7 @@ public class NodeClientHandler extends IoHandlerAdapter {
             if (operation == Operation.TAG_CONVERT_STATE) {
                 ConvertStateProtocol convertStateProtocol = (ConvertStateProtocol) message;
                 logger.info(convertStateProtocol.getMessage());
+                System.out.println("转码完成！");
                 session.write(message);
             }
         }
