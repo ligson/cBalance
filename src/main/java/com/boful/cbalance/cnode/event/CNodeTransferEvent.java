@@ -32,7 +32,6 @@ public class CNodeTransferEvent implements TransferEvent {
     public void onSuccess(File src, File dest) {
         System.out.println("文件" + src.getAbsolutePath() + "上传完成！");
         try {
-            System.out.println("CNodeTranscodeEvent : " + this);
             cNodeClient.setTranscodeEvent(transcodeEvent);
 
             Map<String, String> cmdMap = CommandLineUtils.parse(cmd);

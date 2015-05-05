@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
-import com.boful.convert.core.TranscodeEvent;
 import com.boful.net.cnode.protocol.ConvertStateProtocol;
 import com.boful.net.cnode.protocol.Operation;
 
@@ -16,7 +15,6 @@ public class NodeClientHandler extends IoHandlerAdapter {
 
     private Set<IoSession> sessions = new HashSet<IoSession>();
     private static Logger logger = Logger.getLogger(NodeClientHandler.class);
-    private TranscodeEvent transcodeEvent;
 
     @Override
     public void sessionClosed(IoSession session) throws Exception {
@@ -41,11 +39,6 @@ public class NodeClientHandler extends IoHandlerAdapter {
             int operation = field.getInt(message);
             if (operation == Operation.TAG_CONVERT_STATE) {
                 ConvertStateProtocol convertStateProtocol = (ConvertStateProtocol) message;
-                if (convertStateProtocol.getState() == ConvertStateProtocol.STATE_SUCCESS) {
-                    transcodeEvent.onTranscodeSuccess(null, null, null);
-                } else if (convertStateProtocol.getState() == ConvertStateProtocol.STATE_FAIL) {
-                    transcodeEvent.onTranscodeFail(null, convertStateProtocol.getMessage(), null);
-                }
                 logger.info(convertStateProtocol.getMessage());
                 session.write(message);
             }
@@ -60,9 +53,5 @@ public class NodeClientHandler extends IoHandlerAdapter {
     @Override
     public void exceptionCaught(IoSession session, Throwable cause) throws Exception {
         cause.printStackTrace();
-    }
-
-    public void setTranscodeEvent(TranscodeEvent transcodeEvent) {
-        this.transcodeEvent = transcodeEvent;
     }
 }
