@@ -52,7 +52,6 @@ public class CBalanceClient {
     }
 
     public void send(String cmd) throws Exception {
-        ioSession = cf.getSession();
         if (ioSession != null) {
             ConvertTaskProtocol convertTaskProtocol = new ConvertTaskProtocol();
             convertTaskProtocol.setCmd(cmd);
