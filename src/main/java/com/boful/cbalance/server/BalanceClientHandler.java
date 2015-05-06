@@ -39,7 +39,6 @@ public class BalanceClientHandler extends IoHandlerAdapter {
             int operation = field.getInt(message);
             if (operation == Operation.TAG_CONVERT_STATE) {
                 ConvertStateProtocol convertStateProtocol = (ConvertStateProtocol) message;
-                System.out.println("BalanceClientHandler convertStateProtocol.getState() : "+convertStateProtocol.getState());
                 /*
                 logger.info(convertStateProtocol.getMessage());
                 if (convertStateProtocol.getState() == ConvertStateProtocol.STATE_SUCCESS) {
@@ -51,11 +50,6 @@ public class BalanceClientHandler extends IoHandlerAdapter {
                 }*/
             }
         }
-    }
-
-    @Override
-    public void messageSent(IoSession session, Object message) throws Exception {
-        super.messageSent(session, message);
     }
 
     @Override
