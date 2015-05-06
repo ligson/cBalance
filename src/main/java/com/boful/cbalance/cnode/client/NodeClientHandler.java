@@ -1,6 +1,7 @@
 package com.boful.cbalance.cnode.client;
 
 import java.lang.reflect.Field;
+import java.net.InetSocketAddress;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
+import com.boful.cbalance.server.BalanceServerHandler;
 import com.boful.net.cnode.protocol.ConvertStateProtocol;
 import com.boful.net.cnode.protocol.Operation;
 
@@ -39,9 +41,27 @@ public class NodeClientHandler extends IoHandlerAdapter {
             int operation = field.getInt(message);
             if (operation == Operation.TAG_CONVERT_STATE) {
                 ConvertStateProtocol convertStateProtocol = (ConvertStateProtocol) message;
-                logger.info(convertStateProtocol.getMessage());
-                System.out.println("转码完成！");
-                session.write(message);
+                if (convertStateProtocol.getState() == ConvertStateProtocol.STATE_SUCCESS) {
+                    System.out.println("转码成功！");
+                } else if (convertStateProtocol.getState() == ConvertStateProtocol.STATE_CONVERTING) {
+                    System.out.println("转码中！");
+                    System.out.println(convertStateProtocol.getMessage());
+                } else if (convertStateProtocol.getState() == ConvertStateProtocol.STATE_FAIL) {
+                    System.out.println("转码失败！");
+                }
+                // 取得连接Balance的session
+                String ip = session.getAttribute("rootIp").toString();
+                int port = (int) session.getAttribute("rootPort");
+                System.out.println("NodeClientHandler "+ip+" : "+port);
+                Set<IoSession> balanceSessions = BalanceServerHandler.getSessions();
+                for (IoSession balanceSession : balanceSessions) {
+                    String balanceIp = ((InetSocketAddress) balanceSession.getRemoteAddress()).getHostString();
+                    int balancePort = ((InetSocketAddress) balanceSession.getRemoteAddress()).getPort();
+                    if (balanceIp.equals(ip) && balancePort == port) {
+                        balanceSession.write(convertStateProtocol);
+                        return;
+                    }
+                }
             }
         }
     }
