@@ -29,6 +29,7 @@ public class CNodeTransferEvent implements TransferEvent {
 
     @Override
     public void onSuccess(File src, String dest) {
+        System.out.println("----------CNodeTransferEvent");
         System.out.println("文件" + src.getAbsolutePath() + "上传完成！");
         try {
             Map<String, String> cmdMap = CommandLineUtils.parse(cmd);
@@ -45,7 +46,7 @@ public class CNodeTransferEvent implements TransferEvent {
             }
 
             // 转码任务分配
-            cNodeClient.send(newCmd, session.getRemoteAddress());
+            // cNodeClient.send(newCmd, session.getRemoteAddress());
 
         } catch (Exception e) {
             System.out.println("任务分发失败！");
@@ -62,6 +63,11 @@ public class CNodeTransferEvent implements TransferEvent {
         ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
         convertStateProtocol.setState(ConvertStateProtocol.STATE_CONVERTING);
         convertStateProtocol.setMessage("文件" + src.getAbsolutePath() + "上传进度:" + process + "%");
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         session.write(convertStateProtocol);
     }
 

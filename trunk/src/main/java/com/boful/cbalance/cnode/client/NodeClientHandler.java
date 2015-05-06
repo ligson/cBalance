@@ -49,9 +49,12 @@ public class NodeClientHandler extends IoHandlerAdapter {
                     int balancePort = ((InetSocketAddress) balanceSession.getRemoteAddress()).getPort();
                     if (balanceIp.equals(ip) && balancePort == port) {
                         ConvertStateProtocol convertStateProtocol = (ConvertStateProtocol) message;
-                        System.out.println("NodeClientHandler : "+convertStateProtocol.getMessage());
+                        ConvertStateProtocol balanceProtocol = new ConvertStateProtocol();
+                        balanceProtocol.setState(convertStateProtocol.getState());
+                        balanceProtocol.setMessage(convertStateProtocol.getMessage());
+                        System.out.println("NodeClientHandler : " + balanceProtocol.getMessage());
                         // 向Balance发送消息
-                        balanceSession.write(message);
+                        // balanceSession.write(balanceProtocol);
                         return;
                     }
                 }

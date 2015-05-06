@@ -31,9 +31,8 @@ public class DistributeTaskUtils {
             if (url == null) {
                 url = ClassLoader.getSystemResource("config.properties");
             }
-            InputStream in = new BufferedInputStream(new FileInputStream(url.getPath()));
-            // InputStream in = new BufferedInputStream(new FileInputStream(new
-            // File("src/main/resources/config.properties")));
+            // InputStream in = new BufferedInputStream(new FileInputStream(url.getPath()));
+            InputStream in = new BufferedInputStream(new FileInputStream(new File("src/main/resources/config.properties")));
             Properties props = new Properties();
             props.load(in);
 
@@ -64,9 +63,8 @@ public class DistributeTaskUtils {
             if (url == null) {
                 url = ClassLoader.getSystemResource("serverlist.xml");
             }
-            Document doc = SR.read(new File(url.getPath()));
-            // Document doc = SR.read(new
-            // File("src/main/resources/serverlist.xml"));
+            //Document doc = SR.read(new File(url.getPath()));
+            Document doc = SR.read(new File("src/main/resources/serverlist.xml"));
             Element rootElement = doc.getRootElement();
 
             Element serverRootElement = rootElement.element("servers");
