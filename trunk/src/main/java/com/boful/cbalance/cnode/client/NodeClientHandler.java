@@ -10,7 +10,6 @@ import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
 import com.boful.cbalance.server.BalanceServerHandler;
-import com.boful.net.cnode.protocol.ConvertStateProtocol;
 import com.boful.net.cnode.protocol.Operation;
 
 public class NodeClientHandler extends IoHandlerAdapter {
@@ -40,25 +39,17 @@ public class NodeClientHandler extends IoHandlerAdapter {
         if (field != null) {
             int operation = field.getInt(message);
             if (operation == Operation.TAG_CONVERT_STATE) {
-                ConvertStateProtocol convertStateProtocol = (ConvertStateProtocol) message;
-                if (convertStateProtocol.getState() == ConvertStateProtocol.STATE_SUCCESS) {
-                    System.out.println("转码成功！");
-                } else if (convertStateProtocol.getState() == ConvertStateProtocol.STATE_CONVERTING) {
-                    System.out.println("转码中！");
-                    System.out.println(convertStateProtocol.getMessage());
-                } else if (convertStateProtocol.getState() == ConvertStateProtocol.STATE_FAIL) {
-                    System.out.println("转码失败！");
-                }
                 // 取得连接Balance的session
-                String ip = session.getAttribute("rootIp").toString();
-                int port = (int) session.getAttribute("rootPort");
-                System.out.println("NodeClientHandler "+ip+" : "+port);
+                String ip = session.getAttribute("balanceIp").toString();
+                int port = (int) session.getAttribute("balancePort");
                 Set<IoSession> balanceSessions = BalanceServerHandler.getSessions();
                 for (IoSession balanceSession : balanceSessions) {
                     String balanceIp = ((InetSocketAddress) balanceSession.getRemoteAddress()).getHostString();
                     int balancePort = ((InetSocketAddress) balanceSession.getRemoteAddress()).getPort();
                     if (balanceIp.equals(ip) && balancePort == port) {
-                        balanceSession.write(convertStateProtocol);
+                        System.out.println(message);
+                        // 向Balance发送消息
+                        balanceSession.write(message);
                         return;
                     }
                 }
