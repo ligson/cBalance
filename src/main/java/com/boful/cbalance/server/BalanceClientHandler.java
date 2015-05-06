@@ -38,6 +38,8 @@ public class BalanceClientHandler extends IoHandlerAdapter {
             int operation = field.getInt(message);
             if (operation == Operation.TAG_CONVERT_STATE) {
                 ConvertStateProtocol convertStateProtocol = (ConvertStateProtocol) message;
+                System.out.println("BalanceClientHandler convertStateProtocol.getState() : "+convertStateProtocol.getState());
+                /*
                 logger.info(convertStateProtocol.getMessage());
                 if (convertStateProtocol.getState() == ConvertStateProtocol.STATE_SUCCESS) {
                     System.out.println("转码成功！");
@@ -45,7 +47,7 @@ public class BalanceClientHandler extends IoHandlerAdapter {
                     System.out.println("转码中！");
                 } else if (convertStateProtocol.getState() == ConvertStateProtocol.STATE_FAIL) {
                     System.out.println("转码失败！");
-                }
+                }*/
             }
         }
     }

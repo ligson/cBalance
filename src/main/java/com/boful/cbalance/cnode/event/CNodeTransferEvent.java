@@ -6,7 +6,6 @@ import java.util.Map;
 import org.apache.mina.core.session.IoSession;
 
 import com.boful.cbalance.cnode.client.CNodeClient;
-import com.boful.convert.core.TranscodeEvent;
 import com.boful.net.client.event.TransferEvent;
 import com.boful.net.cnode.protocol.ConvertStateProtocol;
 import com.boful.net.utils.CommandLineUtils;
@@ -30,9 +29,7 @@ public class CNodeTransferEvent implements TransferEvent {
 
     @Override
     public void onSuccess(File src, String dest) {
-        System.out.println("---------------------");
         System.out.println("文件" + src.getAbsolutePath() + "上传完成！");
-        System.out.println("---------------------0");
         try {
             Map<String, String> cmdMap = CommandLineUtils.parse(cmd);
             // 重新生成cmd
@@ -46,15 +43,10 @@ public class CNodeTransferEvent implements TransferEvent {
             if (cmdMap.containsKey("size")) {
                 newCmd += " -size " + cmdMap.get("size");
             }
-            
-            System.out.println("newCmd:"+newCmd);
 
             // 转码任务分配
-            System.out.println("---------------------1");
-            cNodeClient.setTranscodeEvent(transcodeEvent);
-            System.out.println("---------------------2");
-            cNodeClient.send(newCmd);
-            
+            cNodeClient.send(newCmd, session.getRemoteAddress());
+
         } catch (Exception e) {
             System.out.println("任务分发失败！");
             ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
@@ -96,11 +88,5 @@ public class CNodeTransferEvent implements TransferEvent {
 
     public void setCNodeClient(CNodeClient cNodeClient) {
         this.cNodeClient = cNodeClient;
-    }
-
-    private TranscodeEvent transcodeEvent;
-
-    public void setTranscodeEvent(TranscodeEvent event) {
-        this.transcodeEvent = event;
     }
 }

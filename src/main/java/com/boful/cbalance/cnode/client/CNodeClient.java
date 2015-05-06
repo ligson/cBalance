@@ -11,7 +11,6 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
 import com.boful.cnode.server.codec.BofulCodec;
-import com.boful.convert.core.TranscodeEvent;
 import com.boful.net.cnode.protocol.ConvertTaskProtocol;
 
 public class CNodeClient {
@@ -58,19 +57,8 @@ public class CNodeClient {
             convertTaskProtocol.setCmd(cmd);
             String ip = ((InetSocketAddress) rootAddress).getHostString();
             int port = ((InetSocketAddress) rootAddress).getPort();
-            ioSession.setAttribute("rootIp", ip);
-            ioSession.setAttribute("rootPort", port);
-            System.out.println("CNodeClient "+ip+" : "+port);
-            ioSession.write(convertTaskProtocol);
-        } else {
-            throw new Exception("未连接上");
-        }
-    }
-
-    public void send(String cmd) throws Exception {
-        if (ioSession != null) {
-            ConvertTaskProtocol convertTaskProtocol = new ConvertTaskProtocol();
-            convertTaskProtocol.setCmd(cmd);
+            ioSession.setAttribute("balanceIp", ip);
+            ioSession.setAttribute("balancePort", port);
             ioSession.write(convertTaskProtocol);
         } else {
             throw new Exception("未连接上");
@@ -81,9 +69,5 @@ public class CNodeClient {
         System.out.println("disconnect");
         ioSession.getCloseFuture().awaitUninterruptibly();
         connector.dispose();
-    }
-
-    public void setTranscodeEvent(TranscodeEvent transcodeEvent) {
-        ioSession.setAttribute("transcodeEvent", transcodeEvent);
     }
 }
