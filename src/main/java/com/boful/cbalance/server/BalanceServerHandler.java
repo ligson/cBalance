@@ -102,6 +102,9 @@ public class BalanceServerHandler extends IoHandlerAdapter {
         TranscodeEvent transcodeEvent = (TranscodeEvent) session.getAttribute("transcodeEvent");
         event.setTranscodeEvent(transcodeEvent);
 
+        System.out.println("----- diskFile : "+diskFile.getAbsolutePath());
+        System.out.println("----- destFile : "+destFile);
+        
         // 向转码服务器发送文件
         client.send(diskFile, destFile, event);
     }
