@@ -20,7 +20,7 @@ public class CNodeTransferEvent implements TransferEvent {
     }
 
     @Override
-    public void onStart(File src, File dest) {
+    public void onStart(File src, String dest) {
         System.out.println("文件" + src.getAbsolutePath() + "开始上传！");
         ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
         convertStateProtocol.setState(ConvertStateProtocol.STATE_CONVERTING);
@@ -29,25 +29,32 @@ public class CNodeTransferEvent implements TransferEvent {
     }
 
     @Override
-    public void onSuccess(File src, File dest) {
+    public void onSuccess(File src, String dest) {
+        System.out.println("---------------------");
         System.out.println("文件" + src.getAbsolutePath() + "上传完成！");
+        System.out.println("---------------------0");
         try {
             Map<String, String> cmdMap = CommandLineUtils.parse(cmd);
             // 重新生成cmd
             String newCmd = "";
             newCmd += "-operation " + cmdMap.get("operation");
             newCmd += " -id " + cmdMap.get("jobid");
-            newCmd += " -i " + dest.getAbsolutePath();
-            newCmd += " -o " + dest.getAbsolutePath();
+            newCmd += " -i " + dest;
+            newCmd += " -o " + dest;
             newCmd += " -vb " + cmdMap.get("videoBitrate");
             newCmd += " -ab " + cmdMap.get("audioBitrate");
             if (cmdMap.containsKey("size")) {
                 newCmd += " -size " + cmdMap.get("size");
             }
+            
+            System.out.println("newCmd:"+newCmd);
 
             // 转码任务分配
+            System.out.println("---------------------1");
             cNodeClient.setTranscodeEvent(transcodeEvent);
+            System.out.println("---------------------2");
             cNodeClient.send(newCmd);
+            
         } catch (Exception e) {
             System.out.println("任务分发失败！");
             ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
@@ -58,7 +65,7 @@ public class CNodeTransferEvent implements TransferEvent {
     }
 
     @Override
-    public void onTransfer(File src, File dest, int process) {
+    public void onTransfer(File src, String dest, int process) {
         System.out.println("文件" + src.getAbsolutePath() + "上传进度:" + process + "%");
         ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
         convertStateProtocol.setState(ConvertStateProtocol.STATE_CONVERTING);
@@ -67,7 +74,7 @@ public class CNodeTransferEvent implements TransferEvent {
     }
 
     @Override
-    public void onFail(File src, File dest, String message) {
+    public void onFail(File src, String dest, String message) {
         System.out.println("文件" + src.getAbsolutePath() + "上传失败！");
         ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
         convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
