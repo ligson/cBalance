@@ -10,6 +10,7 @@ import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
 import com.boful.cbalance.server.BalanceServerHandler;
+import com.boful.net.cnode.protocol.ConvertStateProtocol;
 import com.boful.net.cnode.protocol.Operation;
 
 public class NodeClientHandler extends IoHandlerAdapter {
@@ -47,7 +48,8 @@ public class NodeClientHandler extends IoHandlerAdapter {
                     String balanceIp = ((InetSocketAddress) balanceSession.getRemoteAddress()).getHostString();
                     int balancePort = ((InetSocketAddress) balanceSession.getRemoteAddress()).getPort();
                     if (balanceIp.equals(ip) && balancePort == port) {
-                        System.out.println(message);
+                        ConvertStateProtocol convertStateProtocol = (ConvertStateProtocol) message;
+                        System.out.println("NodeClientHandler : "+convertStateProtocol.getMessage());
                         // 向Balance发送消息
                         balanceSession.write(message);
                         return;
@@ -55,11 +57,6 @@ public class NodeClientHandler extends IoHandlerAdapter {
                 }
             }
         }
-    }
-
-    @Override
-    public void messageSent(IoSession session, Object message) throws Exception {
-        super.messageSent(session, message);
     }
 
     @Override

@@ -106,6 +106,7 @@ public class BalanceServerHandler extends IoHandlerAdapter {
     @Override
     public void messageSent(IoSession session, Object message) throws Exception {
         super.messageSent(session, message);
+        System.out.println("BalanceServerHandler : messageSent");
     }
 
     @Override
