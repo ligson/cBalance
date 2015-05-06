@@ -60,6 +60,7 @@ public class CNodeClient {
             int port = ((InetSocketAddress) rootAddress).getPort();
             ioSession.setAttribute("rootIp", ip);
             ioSession.setAttribute("rootPort", port);
+            System.out.println("CNodeClient "+ip+" : "+port);
             ioSession.write(convertTaskProtocol);
         } else {
             throw new Exception("未连接上");

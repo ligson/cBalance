@@ -28,7 +28,6 @@ public class BalanceClientHandler extends IoHandlerAdapter {
 
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
-
         Field field = null;
         try {
             field = message.getClass().getDeclaredField("OPERATION");
@@ -39,7 +38,6 @@ public class BalanceClientHandler extends IoHandlerAdapter {
             int operation = field.getInt(message);
             if (operation == Operation.TAG_CONVERT_STATE) {
                 ConvertStateProtocol convertStateProtocol = (ConvertStateProtocol) message;
-                System.out.println("convertStateProtocol : "+convertStateProtocol.getState());
                 logger.info(convertStateProtocol.getMessage());
                 if (convertStateProtocol.getState() == ConvertStateProtocol.STATE_SUCCESS) {
                     System.out.println("转码成功！");
