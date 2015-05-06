@@ -28,6 +28,7 @@ public class BalanceClientHandler extends IoHandlerAdapter {
 
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
+        System.out.println("BalanceClientHandler : messageReceived");
         Field field = null;
         try {
             field = message.getClass().getDeclaredField("OPERATION");
