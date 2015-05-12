@@ -3,33 +3,20 @@ package com.boful.cbalance.cnode.event;
 import java.io.File;
 import java.util.Map;
 
-import org.apache.mina.core.session.IoSession;
-
 import com.boful.cbalance.cnode.client.CNodeClient;
+import com.boful.convert.core.TranscodeEvent;
 import com.boful.net.client.event.TransferEvent;
-import com.boful.net.cnode.protocol.ConvertStateProtocol;
 import com.boful.net.utils.CommandLineUtils;
 
 public class CNodeTransferEvent implements TransferEvent {
 
-    private IoSession session;
-
-    public CNodeTransferEvent(IoSession session) {
-        this.session = session;
-    }
-
     @Override
     public void onStart(File src, String dest) {
         System.out.println("文件" + src.getAbsolutePath() + "开始上传！");
-        ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
-        convertStateProtocol.setState(ConvertStateProtocol.STATE_CONVERTING);
-        convertStateProtocol.setMessage("文件" + src.getAbsolutePath() + "开始上传！");
-        session.write(convertStateProtocol);
     }
 
     @Override
     public void onSuccess(File src, String dest) {
-        System.out.println("----------CNodeTransferEvent");
         System.out.println("文件" + src.getAbsolutePath() + "上传完成！");
         try {
             Map<String, String> cmdMap = CommandLineUtils.parse(cmd);
@@ -45,39 +32,27 @@ public class CNodeTransferEvent implements TransferEvent {
                 newCmd += " -size " + cmdMap.get("size");
             }
 
-            // 转码任务分配
-            // cNodeClient.send(newCmd, session.getRemoteAddress());
+            System.out.println("newCmd:" + newCmd);
+
+            // 转码任务
+            CNodeClient cNodeClient = new CNodeClient();
+            cNodeClient.connect(ip, cNodePort);
+            cNodeClient.setTranscodeEvent(transcodeEvent);
+            cNodeClient.send(newCmd);
 
         } catch (Exception e) {
             System.out.println("任务分发失败！");
-            ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
-            convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-            convertStateProtocol.setMessage("任务分发失败！");
-            session.write(convertStateProtocol);
         }
     }
 
     @Override
     public void onTransfer(File src, String dest, int process) {
         System.out.println("文件" + src.getAbsolutePath() + "上传进度:" + process + "%");
-        ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
-        convertStateProtocol.setState(ConvertStateProtocol.STATE_CONVERTING);
-        convertStateProtocol.setMessage("文件" + src.getAbsolutePath() + "上传进度:" + process + "%");
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        session.write(convertStateProtocol);
     }
 
     @Override
     public void onFail(File src, String dest, String message) {
         System.out.println("文件" + src.getAbsolutePath() + "上传失败！");
-        ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
-        convertStateProtocol.setState(ConvertStateProtocol.STATE_FAIL);
-        convertStateProtocol.setMessage("文件" + src.getAbsolutePath() + "上传失败！");
-        session.write(convertStateProtocol);
     }
 
     private String cmd;
@@ -90,9 +65,21 @@ public class CNodeTransferEvent implements TransferEvent {
         return this.cmd;
     }
 
-    private CNodeClient cNodeClient;
+    private TranscodeEvent transcodeEvent;
 
-    public void setCNodeClient(CNodeClient cNodeClient) {
-        this.cNodeClient = cNodeClient;
+    public void setTranscodeEvent(TranscodeEvent event) {
+        this.transcodeEvent = event;
+    }
+
+    private String ip;
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
+    private int cNodePort;
+
+    public void setCNodePort(int cNodePort) {
+        this.cNodePort = cNodePort;
     }
 }
