@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
+import com.boful.cbalance.cnode.event.DownloadTransferEvent;
 import com.boful.convert.core.TranscodeEvent;
 import com.boful.convert.model.DiskFile;
 import com.boful.net.client.FServerClient;
@@ -46,7 +47,6 @@ public class NodeClientHandler extends IoHandlerAdapter {
                 TranscodeEvent transcodeEvent = (TranscodeEvent) session.getAttribute("transcodeEvent");
 
                 int state = convertStateProtocol.getState();
-                System.out.println("state  : " + state);
                 // 转码失败
                 if (state == ConvertStateProtocol.STATE_FAIL) {
                     transcodeEvent.onTranscodeFail(new DiskFile((String) session.getAttribute("diskFile")),
@@ -84,14 +84,15 @@ public class NodeClientHandler extends IoHandlerAdapter {
     }
 
     private void downloadFile(IoSession session) throws Exception {
-        if(session.getAttribute("downloadFlag") == null) {
+        if (session.getAttribute("downloadFlag") == null) {
             // 设置标识
             session.setAttribute("downloadFlag", 1);
-            
-            // 取得FServerClient
-            FServerClient fServerClient = (FServerClient)session.getAttribute("fServerClient");
 
-            fServerClient.download(new File("E:/test/convert/7867C06EA8975704CA1B1D5DB87FC3CB.f4v"), (String) session.getAttribute("destFile"), null);
+            // 取得FServerClient
+            FServerClient fServerClient = (FServerClient) session.getAttribute("fServerClient");
+            DownloadTransferEvent event = new DownloadTransferEvent();
+            fServerClient.download(new File("E:/test/convert/7867C06EA8975704CA1B1D5DB87FC3CB.f4v"),
+                    (String) session.getAttribute("destFile"), event);
         }
     }
 
