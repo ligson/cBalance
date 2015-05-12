@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.boful.cbalance.cnode.client.CNodeClient;
 import com.boful.convert.core.TranscodeEvent;
+import com.boful.net.client.FServerClient;
 import com.boful.net.client.event.TransferEvent;
 import com.boful.net.utils.CommandLineUtils;
 
@@ -32,12 +33,15 @@ public class CNodeTransferEvent implements TransferEvent {
                 newCmd += " -size " + cmdMap.get("size");
             }
 
+            System.out.println("cmd:" + cmd);
             System.out.println("newCmd:" + newCmd);
 
             // 转码任务
             CNodeClient cNodeClient = new CNodeClient();
             cNodeClient.connect(ip, cNodePort);
             cNodeClient.setTranscodeEvent(transcodeEvent);
+            cNodeClient.setCmdArgs(cmdMap);
+            cNodeClient.setFServerClient(fServerClient);
             cNodeClient.send(newCmd);
 
         } catch (Exception e) {
@@ -81,5 +85,11 @@ public class CNodeTransferEvent implements TransferEvent {
 
     public void setCNodePort(int cNodePort) {
         this.cNodePort = cNodePort;
+    }
+    
+    private FServerClient fServerClient;
+    
+    public void setFServerClient(FServerClient fServerClient) {
+        this.fServerClient = fServerClient;
     }
 }

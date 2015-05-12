@@ -2,6 +2,7 @@ package com.boful.cbalance.cnode.client;
 
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.apache.mina.core.filterchain.DefaultIoFilterChainBuilder;
@@ -12,6 +13,7 @@ import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
 import com.boful.cnode.server.codec.BofulCodec;
 import com.boful.convert.core.TranscodeEvent;
+import com.boful.net.client.FServerClient;
 import com.boful.net.cnode.protocol.ConvertTaskProtocol;
 
 public class CNodeClient {
@@ -78,6 +80,16 @@ public class CNodeClient {
 
     public void setTranscodeEvent(TranscodeEvent event) {
         ioSession.setAttribute("transcodeEvent", event);
+    }
+
+    public void setCmdArgs(Map<String, String> cmdMap) {
+        ioSession.setAttribute("jobid", cmdMap.get("jobid"));
+        ioSession.setAttribute("diskFile", cmdMap.get("diskFile"));
+        ioSession.setAttribute("destFile", cmdMap.get("destFile"));
+    }
+
+    public void setFServerClient(FServerClient fServerClient) {
+        ioSession.setAttribute("fServerClient", fServerClient);
     }
 
     public void disconnect() {
