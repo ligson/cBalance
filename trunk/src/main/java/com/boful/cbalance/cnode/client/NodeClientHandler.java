@@ -96,7 +96,7 @@ public class NodeClientHandler extends IoHandlerAdapter {
 
             System.out.println("----------" + session.getAttribute("destFile"));
 
-            fServerClient.download(new File("E:/test/convert/7867C06EA8975704CA1B1D5DB87FC3CB.f4v"),
+            fServerClient.download(new File((String) session.getAttribute("diskFile")),
                     (String) session.getAttribute("destFile"), event);
         }
     }
