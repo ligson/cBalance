@@ -84,6 +84,8 @@ public class NodeClientHandler extends IoHandlerAdapter {
     }
 
     private void downloadFile(IoSession session) throws Exception {
+        System.out.println("downloadFile");
+
         if (session.getAttribute("downloadFlag") == null) {
             // 设置标识
             session.setAttribute("downloadFlag", 1);
@@ -91,6 +93,9 @@ public class NodeClientHandler extends IoHandlerAdapter {
             // 取得FServerClient
             FServerClient fServerClient = (FServerClient) session.getAttribute("fServerClient");
             DownloadTransferEvent event = new DownloadTransferEvent();
+
+            System.out.println("----------" + session.getAttribute("destFile"));
+
             fServerClient.download(new File("E:/test/convert/7867C06EA8975704CA1B1D5DB87FC3CB.f4v"),
                     (String) session.getAttribute("destFile"), event);
         }
