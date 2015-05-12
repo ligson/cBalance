@@ -57,13 +57,15 @@ public class BalanceClientHandler extends IoHandlerAdapter {
                 // 传输文件
                 String ip = distributeServerProtocol.getServerIp();
                 int port = distributeServerProtocol.getfServerPort();
+
+                FServerClient fServerClient = new FServerClient();
+                fServerClient.connect(ip, port);
                 CNodeTransferEvent event = new CNodeTransferEvent();
                 event.setCmd(cmd);
                 event.setTranscodeEvent((TranscodeEvent) session.getAttribute("transcodeEvent"));
                 event.setIp(ip);
                 event.setCNodePort(distributeServerProtocol.getcNodePort());
-                FServerClient fServerClient = new FServerClient();
-                fServerClient.connect(ip, port);
+                event.setFServerClient(fServerClient);
                 fServerClient.send(new File(cmdMap.get("diskFile")), cmdMap.get("destFile"), event);
             }
         }
