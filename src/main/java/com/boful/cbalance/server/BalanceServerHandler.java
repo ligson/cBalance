@@ -1,23 +1,18 @@
 package com.boful.cbalance.server;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
-import com.boful.cbalance.cnode.event.CNodeTransferEvent;
 import com.boful.cbalance.utils.DistributeTaskUtils;
-import com.boful.net.client.FServerClient;
-import com.boful.net.cnode.protocol.ConvertStateProtocol;
+import com.boful.net.cbalance.protocol.DistributeServerProtocol;
 import com.boful.net.cnode.protocol.ConvertTaskProtocol;
 import com.boful.net.cnode.protocol.Operation;
-import com.boful.net.utils.CommandLineUtils;
 
 public class BalanceServerHandler extends IoHandlerAdapter {
 
@@ -64,8 +59,15 @@ public class BalanceServerHandler extends IoHandlerAdapter {
      */
     private void distributeTask(ConvertTaskProtocol convertTaskProtocol, IoSession session) throws Exception {
 
-        ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
-
+        DistributeServerProtocol distributeServerProtocol = new DistributeServerProtocol();
+        Map<String, String> clientMap = DistributeTaskUtils.getClientMap();
+        distributeServerProtocol.setServerIp(clientMap.get("address"));
+        distributeServerProtocol.setfServerPort(Integer.parseInt(clientMap.get("serverPort")));
+        distributeServerProtocol.setcNodePort(Integer.parseInt(clientMap.get("nodePort")));
+        session.write(distributeServerProtocol);
+        
+/*
+ ConvertStateProtocol convertStateProtocol = new ConvertStateProtocol();
         // 取得FServerClient和CNodeClient
         FServerClient client = DistributeTaskUtils.getClient();
         if (client == null) {
@@ -101,6 +103,7 @@ public class BalanceServerHandler extends IoHandlerAdapter {
 
         // 向转码服务器发送文件
         client.send(diskFile, destFile, event);
+        */
     }
 
     @Override

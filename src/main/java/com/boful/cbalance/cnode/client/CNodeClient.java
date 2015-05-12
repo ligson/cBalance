@@ -11,6 +11,7 @@ import org.apache.mina.filter.codec.ProtocolCodecFilter;
 import org.apache.mina.transport.socket.nio.NioSocketConnector;
 
 import com.boful.cnode.server.codec.BofulCodec;
+import com.boful.convert.core.TranscodeEvent;
 import com.boful.net.cnode.protocol.ConvertTaskProtocol;
 
 public class CNodeClient {
@@ -63,6 +64,20 @@ public class CNodeClient {
         } else {
             throw new Exception("未连接上");
         }
+    }
+
+    public void send(String cmd) throws Exception {
+        if (ioSession != null) {
+            ConvertTaskProtocol convertTaskProtocol = new ConvertTaskProtocol();
+            convertTaskProtocol.setCmd(cmd);
+            ioSession.write(convertTaskProtocol);
+        } else {
+            throw new Exception("未连接上");
+        }
+    }
+
+    public void setTranscodeEvent(TranscodeEvent event) {
+        ioSession.setAttribute("transcodeEvent", event);
     }
 
     public void disconnect() {

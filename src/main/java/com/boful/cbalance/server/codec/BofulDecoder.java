@@ -5,7 +5,7 @@ import org.apache.mina.core.session.IoSession;
 import org.apache.mina.filter.codec.CumulativeProtocolDecoder;
 import org.apache.mina.filter.codec.ProtocolDecoderOutput;
 
-import com.boful.net.cnode.protocol.ConvertStateProtocol;
+import com.boful.net.cbalance.protocol.DistributeServerProtocol;
 import com.boful.net.cnode.protocol.ConvertTaskProtocol;
 import com.boful.net.cnode.protocol.Operation;
 
@@ -20,6 +20,17 @@ public class BofulDecoder extends CumulativeProtocolDecoder {
                 return false;
             }
             int operation = inBuffer.getInt();
+            // 转码服务器分配任务
+            if (operation == Operation.DISTRIBUTE_CONVERT_SEVER) {
+                DistributeServerProtocol distributeServerProtocol = DistributeServerProtocol.parse(inBuffer);
+                if (distributeServerProtocol == null) {
+                    inBuffer.reset();
+                    return false;
+                } else {
+                    out.write(distributeServerProtocol);
+                    return true;
+                }
+            }
             // 转码任务
             if (operation == Operation.TAG_CONVERT_TASK) {
                 ConvertTaskProtocol convertTaskProtocol = ConvertTaskProtocol.parse(inBuffer);
@@ -28,17 +39,6 @@ public class BofulDecoder extends CumulativeProtocolDecoder {
                     return false;
                 } else {
                     out.write(convertTaskProtocol);
-                    return true;
-                }
-
-                // 转码状态
-            } else if (operation == Operation.TAG_CONVERT_STATE) {
-                ConvertStateProtocol convertStateProtocol = ConvertStateProtocol.parse(inBuffer);
-                if (convertStateProtocol == null) {
-                    inBuffer.reset();
-                    return false;
-                } else {
-                    out.write(convertStateProtocol);
                     return true;
                 }
             }

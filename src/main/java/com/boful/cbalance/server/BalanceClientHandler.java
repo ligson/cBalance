@@ -1,15 +1,21 @@
 package com.boful.cbalance.server;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
 
-import com.boful.net.cnode.protocol.ConvertStateProtocol;
+import com.boful.cbalance.cnode.event.CNodeTransferEvent;
+import com.boful.convert.core.TranscodeEvent;
+import com.boful.net.cbalance.protocol.DistributeServerProtocol;
+import com.boful.net.client.FServerClient;
 import com.boful.net.cnode.protocol.Operation;
+import com.boful.net.utils.CommandLineUtils;
 
 public class BalanceClientHandler extends IoHandlerAdapter {
 
@@ -28,7 +34,6 @@ public class BalanceClientHandler extends IoHandlerAdapter {
 
     @Override
     public void messageReceived(IoSession session, Object message) throws Exception {
-        System.out.println("BalanceClientHandler : messageReceived");
         Field field = null;
         try {
             field = message.getClass().getDeclaredField("OPERATION");
@@ -37,17 +42,29 @@ public class BalanceClientHandler extends IoHandlerAdapter {
         }
         if (field != null) {
             int operation = field.getInt(message);
-            if (operation == Operation.TAG_CONVERT_STATE) {
-                ConvertStateProtocol convertStateProtocol = (ConvertStateProtocol) message;
-                /*
-                logger.info(convertStateProtocol.getMessage());
-                if (convertStateProtocol.getState() == ConvertStateProtocol.STATE_SUCCESS) {
-                    System.out.println("转码成功！");
-                } else if (convertStateProtocol.getState() == ConvertStateProtocol.STATE_CONVERTING) {
-                    System.out.println("转码中！");
-                } else if (convertStateProtocol.getState() == ConvertStateProtocol.STATE_FAIL) {
-                    System.out.println("转码失败！");
-                }*/
+            if (operation == Operation.DISTRIBUTE_CONVERT_SEVER) {
+                DistributeServerProtocol distributeServerProtocol = (DistributeServerProtocol) message;
+                System.out.println("-----------------");
+                System.out.println("ServerIp : " + distributeServerProtocol.getServerIp());
+                System.out.println("fServerPort : " + distributeServerProtocol.getfServerPort());
+                System.out.println("cNodePort : " + distributeServerProtocol.getcNodePort());
+                System.out.println("-----------------");
+
+                // 解析命令行
+                String cmd = (String) session.getAttribute("cmd");
+                Map<String, String> cmdMap = CommandLineUtils.parse(cmd);
+
+                // 传输文件
+                String ip = distributeServerProtocol.getServerIp();
+                int port = distributeServerProtocol.getfServerPort();
+                CNodeTransferEvent event = new CNodeTransferEvent();
+                event.setCmd(cmd);
+                event.setTranscodeEvent((TranscodeEvent) session.getAttribute("transcodeEvent"));
+                event.setIp(ip);
+                event.setCNodePort(distributeServerProtocol.getcNodePort());
+                FServerClient fServerClient = new FServerClient();
+                fServerClient.connect(ip, port);
+                fServerClient.send(new File(cmdMap.get("diskFile")), cmdMap.get("destFile"), event);
             }
         }
     }

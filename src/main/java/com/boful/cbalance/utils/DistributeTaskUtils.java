@@ -6,7 +6,9 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -22,6 +24,7 @@ public class DistributeTaskUtils {
     private static Logger logger = Logger.getLogger(DistributeTaskUtils.class);
     private static List<FServerClient> fServerClientList = null;
     private static List<CNodeClient> cNodeClientList = null;
+    private static List<Map<String, String>> clientMapList = null;
 
     public static int[] initServerConfig() {
         logger.debug("服务器配置文件初始化...........");
@@ -31,8 +34,10 @@ public class DistributeTaskUtils {
             if (url == null) {
                 url = ClassLoader.getSystemResource("config.properties");
             }
-            // InputStream in = new BufferedInputStream(new FileInputStream(url.getPath()));
-            InputStream in = new BufferedInputStream(new FileInputStream(new File("src/main/resources/config.properties")));
+            // InputStream in = new BufferedInputStream(new
+            // FileInputStream(url.getPath()));
+            InputStream in = new BufferedInputStream(new FileInputStream(new File(
+                    "src/main/resources/config.properties")));
             Properties props = new Properties();
             props.load(in);
 
@@ -63,7 +68,7 @@ public class DistributeTaskUtils {
             if (url == null) {
                 url = ClassLoader.getSystemResource("serverlist.xml");
             }
-            //Document doc = SR.read(new File(url.getPath()));
+            // Document doc = SR.read(new File(url.getPath()));
             Document doc = SR.read(new File("src/main/resources/serverlist.xml"));
             Element rootElement = doc.getRootElement();
 
@@ -72,6 +77,7 @@ public class DistributeTaskUtils {
 
             fServerClientList = new ArrayList<FServerClient>();
             cNodeClientList = new ArrayList<CNodeClient>();
+            clientMapList = new ArrayList<Map<String, String>>();
             String address = "";
             int serverPort = 0;
             int nodePort = 0;
@@ -93,6 +99,11 @@ public class DistributeTaskUtils {
                     cNodeClient.connect(address, nodePort);
                     cNodeClientList.add(cNodeClient);
 
+                    Map<String, String> clientMap = new HashMap<String, String>();
+                    clientMap.put("address", address);
+                    clientMap.put("serverPort", serverPortElement.getText());
+                    clientMap.put("nodePort", nodePortElement.getText());
+                    clientMapList.add(clientMap);
                 } catch (Exception e) {
                     // 出现任何异常不处理，进行下一个客户端配置
                     continue;
@@ -138,4 +149,19 @@ public class DistributeTaskUtils {
         return cNodeClientList.get(clientIndex);
     }
 
+    public static Map<String, String> getClientMap() {
+
+        if (maxCount == 0) {
+            return null;
+        }
+
+        Map<String, String> clientMap = clientMapList.get(nowIndex);
+
+        nowIndex++;
+        if (nowIndex == maxCount) {
+            nowIndex = 0;
+        }
+
+        return clientMap;
+    }
 }

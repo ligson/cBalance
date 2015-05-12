@@ -55,12 +55,13 @@ public class CBalanceClient {
         if (ioSession != null) {
             ConvertTaskProtocol convertTaskProtocol = new ConvertTaskProtocol();
             convertTaskProtocol.setCmd(cmd);
+            ioSession.setAttribute("cmd", cmd);
             ioSession.write(convertTaskProtocol);
         } else {
             throw new Exception("未连接上");
         }
     }
-    
+
     public void setTranscodeEvent(TranscodeEvent transcodeEvent) {
         ioSession.setAttribute("transcodeEvent", transcodeEvent);
     }
